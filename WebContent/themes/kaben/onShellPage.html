@@ -1,0 +1,55 @@
+
+<!-- 前台分销商已上架销售页面页码列表显示公用html代码，每个需要用到页码列表显示的页面直接引入这个html，然后创建各自的javascript函数-gotPageNum()，实现自己的url跳转  -->
+<div class="paging_ym">
+	<!-- 如果总页数小于等于6，则全部显示 -->
+	<#if onShelltotalPage lte 6>
+		<#-- 进行判断，当页面总数不等于0时候才显示页码列表 -->
+		<#if onShelltotalPage != 0 >
+			<#list 1..onShelltotalPage as onShelltotalPage>
+				<a href="javascript:gotoPageNum(${onShelltotalPage})" <#if distributionGoodsOnShellTag.page?number==onShelltotalPage>class="on"</#if>>${onShelltotalPage}</a>
+			</#list>
+		</#if>
+	<#-- 如果总页数大于6，则按照以下逻辑再进行判断 -->
+	<#else>								
+		<!-- 判断如果当前页大于4，则额外显示第一页和... -->
+		<#if distributionGoodsOnShellTag.page2 gt 4 >
+			<a href="javascript:gotoPageNum(1)">1</a>
+			<span class="no_click">. . .</span>
+		<#-- 判断如果当前页等于4，则额外显示第一页，不显示... -->	
+		<#elseif distributionGoodsOnShellTag.page2 == 4>
+			<a href="javascript:gotoPageNum(1)">1</a>
+		</#if>
+		
+		<!-- 循环显示当前页、当前页的前两个页码和后两个页码 -->
+		<#list distributionGoodsOnShellTag.beginPageIndex..distributionGoodsOnShellTag.endPageIndex as onShelltotalPage>
+			<a href="javascript:gotoPageNum(${onShelltotalPage})" <#if distributionGoodsOnShellTag.page?number==onShelltotalPage>class="on"</#if>>${onShelltotalPage}</a>
+		</#list>
+		
+		<#if distributionGoodsOnShellTag.page2 lt onShelltotalPage-3 >
+			<span class="no_click">. . .</span>
+			<a href="javascript:gotoPageNum(${distributionGoodsOnShellTag.onShelltotalPage})">${distributionGoodsOnShellTag.onShelltotalPage}</a>
+		<#elseif distributionGoodsOnShellTag.page2 == onShelltotalPage-3>
+			<a href="javascript:gotoPageNum(${distributionGoodsOnShellTag.onShelltotalPage})">${distributionGoodsOnShellTag.onShelltotalPage}</a>
+		</#if>
+	</#if>
+</div>
+
+
+<#if onShelltotalPage != 0 >
+	<div class="paging_tym">
+		<em>跳转至</em>
+		<p class="popup">
+			<font class="popup_mr" title="请选择页码请选择页码请选择页码">请选择页码请选择页码请选择页码</font>
+			<span class="popup_posi">
+				<a href="javascript:;" class="popup_posi_1" title="请选择页码">请选择页码</a>
+				
+				<#list 1..onShelltotalPage as onShelltotalPage>
+					<a href="javascript:gotoPageNum(${onShelltotalPage})" title="${onShelltotalPage_index+1}">${onShelltotalPage_index+1}</a>
+				</#list>
+			
+			</span>
+			<i class="popup_xljt"></i>
+		</p>
+		<em>页</em>
+	</div>
+</#if>
