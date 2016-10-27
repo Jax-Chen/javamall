@@ -1,0 +1,7 @@
+
+引入jakson的jar包
+
+创建ObjectMapper对象，然后就可以利用jakson把数组或者对象封装成字符串，进行传输
+
+String jsonStr = mapper.writeValueAsString(new ArrayList());
+

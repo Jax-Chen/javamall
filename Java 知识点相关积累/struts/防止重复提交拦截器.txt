@@ -1,0 +1,11 @@
+	
+
+在添加成功的action里配置：
+<action name="user" class="com.bjsxt.action.UserAction">
+	<interceptor-ref name="defaultStack"/>
+	<interceptor-ref name="token"/>
+	<result name="invalid.token">/error.jsp<result>
+</action>
+
+在提交页面的表单<form>里添加:
+<s:token></s:token>

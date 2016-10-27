@@ -1,0 +1,48 @@
+
+	怎么使用hibernate自动生成Id
+
+1、在getId方法上添加：@GeneratedValue，默认的的Id生成策略就是native，
+   在Oracle中就会选择：hibernate_sequence(名称固定）
+   在MySQL中就会选择：auto_increment
+
+2、或者自己指定使用idendity：@GeneratedValue（strategy=GenerationType.IDENTITY）
+
+3、默认不同表使用都是同一个ID生成策略，假如想要每个表用自己的ID生成策略：
+
+在类的最上方加上：@SequenceGenerator(name="teacherSEQ",sequenceName="teacherSEQ_DB")
+然后在getId（）方法上添加：@GeneratorValue(strategy=GeneratorType.SEQENCE,generator="teacherSEQ")
+
+4、hibernate帮我们生成一个table，里面放着每一个需要生成ID的字段和值：
+	key		value
+	teacher		1
+	student		5
+生成这个一样表，然后里面放着每一种对应的ID生成策略
+
+写法：在类的上面添加：@TableGeerator(
+			name="Teacher_GEN"	//这是这个生成策略的名字
+			table="GENERATOR_TABLE"	//这是生成的这个table的名字
+			pkColumName="key	//这是第一个字段的名字"
+			valueColumName="value"	//这是第二个字段的名字
+			pkColumName="teacher"	//这是第一条记录对应的第一个字段的值
+			alliocationSize=1	//这是第二个字段每次添加的多少	
+)
+然后在getId（）方法上添加：@GeneratorValue(strategy=GeneratorType.TABLE,generator="Teacher_GEN")
+
+5、联合主键的写法
+写一个联合主键类，还需要重写主键类的equals方法和hashCode方法
+这个主键类还要实现serializable接口
+然后在model类里写上 private Obeject pk；
+
+第一种：
+在主键类上写:@Embeddedble
+在model类的主键类变量上写：@Id
+
+第二种：
+在model类的主键类get方法上写：@EmbeddedId
+
+第三种：在model类上写@idClass（"主键类的名称.class"）
+假如联合主键类里面有 private String id;和 private String name;
+就在model类里面的getId()方法和getName()方法上都写@Id
+而不用写get主键类()方法，上面两种需要写get主键类()方法
+
+

@@ -1,0 +1,43 @@
+
+引入相关的jar包，然后在xml文件里配置
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/spring" />
+		<property name="username" value="root" />
+		<property name="password" value="root" />
+	
+	</bean>
+
+
+
+
+或者使用占位符的方式：
+
+一、配置jdbc.properties属性文件
+connection.username=root
+connection.password=root
+connection.url=jdbc:mysql://localhost:3306/spring
+connection.driverClassName=com.mysql.jdbc.Driver
+
+
+二、spring配置文件中,配置读取db.properties文件的bean
+<bean id="config"
+  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+  <property name="location">
+   <value>classpath:jdbc.properties</value>
+  </property>
+ </bean>
+
+
+三、最后在spring的xml文件里配置dataSource
+ 	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource"destroy-method="close">
+		 	<property name="username" value="${connection.username}"></property>
+			 <property name="password" value="${connection.password}"></property>
+			 <property name="url" value="${connection.url}"></property>
+			 <property name="driverClassName" value="${connection.driverClassName}"></property>
+	</bean>

@@ -1,0 +1,8 @@
+
+1、也能如Junit的jar包
+
+2、创建一个src folder
+
+3、创建一个Unit test cast，然后选上要测试的类
+
+4、然后写上测试方法，如有必要写上@beforeClass和@afterClass

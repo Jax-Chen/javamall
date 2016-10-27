@@ -1,0 +1,15 @@
+
+schema约束：约束xml文件能写什么东西
+
+
+	
+	schema约束文件中的内容的解释
+
+namespace：相当于schema文件的id
+
+targetNamespace：用来指定schema文件的namespace的值
+
+xmlns：引入一个约束，他的值是一个schema文件的namespace的值
+
+schemaLocation属性:用来指定引入的schema文件的位置
+

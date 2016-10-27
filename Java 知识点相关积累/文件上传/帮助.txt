@@ -1,0 +1,23 @@
+两种存储方式，一种用代码命名上传文件的名字，一种把名字存储到数据库里
+
+第一种方法：
+//拿到存放上传文件的那个文件夹真实目录
+File uploadPath = new File(getServletContext().getRealPath("uoload"));
+
+//在web.xml里设置tomcat初始化的时候就启动init（）方法，然后在init方法里创建目录
+//如果目录不存在
+if(!uploadPath.exists()){
+	//创建目录
+	uploadPath.mkdir();
+}
+
+//临时I目录
+File tempPath = new File(getServletContext().getRealPath("temp"));
+if(!tempPath.exists()){
+	tempPath.mkdir();
+}
+
+//第二种方法：
+//在数据库里添加个字段，用于存放文件名称，然后下次读取文件名字的时候，直接从数据库表里读取名称,
+
+//在上传文件的servlet里把拿到的文件名存储到数据库里，然后在显示的时候直接拿到物料的file_name字段就可以

@@ -1,0 +1,207 @@
+
+
+			插入子节点
+
+	插在子节点的最后
+第一种写法：$("#id").append("<p id='pId'>p的内容<p/>");
+	这样就往id为‘id’的dom元素下插入子节点，这是插入在最后一个
+
+第二种写法：("<p id='pId'>p的内容<p/>").appendTo($('#id'))
+	这两种是主语和宾语调换位置，效果一模一样
+
+
+	插在子节点的第一个
+第一种写法：$("#id").prepend("<p>p的内容</p>")
+
+第二种写法：("<p>p的内容</p>").prependTo($("#id"))
+
+
+			
+			插入节点（同一级别）
+	插入到节点的后面
+$("#id").after("<p id='shanghai'>上海</p>");
+	这两种方法一模一样，都是加入到节点的后面
+("<p id="pid">上海</p>").insertAfter($("#id"))
+
+
+	插入到节点的前面
+$("#id").before("<p id='shanghai'>上海</p>");
+	这两种方法一模一样，都是加入到节点的后面
+("<p id="pid">上海</p>").insertBefore($("#id"))
+
+
+==========================================================================================
+
+			删除节点
+
+删除节点：remove()
+
+清空节点及子节点：empty()
+	
+	例子：$("#id").remove()		$("#id").empty()
+			
+
+==========================================================================================
+
+
+			克隆节点
+
+$("#id").clone(true)-----clone的参数：如果是true，就复制他的动作，例如响应
+
+例子：$("#id").clone().attr("id","bj2").insertAfter($("#id2"));
+
+把id为id的元素克隆后，并且修改他的id为bj2，然后添加到id为id2的元素后面
+
+
+==========================================================================================
+
+			替换节点--replaceWith、replaceAll
+
+$("<li>li内容</li>").replaceAll($("#id"))
+把id为id的元素替换成前面的内容，或者另外种写法
+$("#id").replaceWith($("<li>li内容</li>"))
+	
+	注意：替换节点和添加几点的区别，需要替换和添加的内容，在替换这里有$，在添加里没有
+
+
+==========================================================================================
+			包裹节点--- wrap、wrapAll、wrapInner
+
+<li>1</li>
+<li>2</li>
+<li>3</li>
+<li>4</li>
+$("li").wrap("<font color='red'></font>")
+	这样执行之后 ，代码就变成了
+<font color='red'><li>1</li></font>
+<font color='red'><li>2</li></font>
+<font color='red'><li>3</li></font>
+<font color='red'><li>4</li></font>
+所有li都一个一个包装起来
+
+<li>1</li>
+<li>2</li>
+<li>3</li>
+<li>4</li>
+$("li").wrapAll("<font color='red'></font>")
+	这样执行之后 ，代码就变成了
+<font color="red">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+</font>
+看成一个整体一起包装
+	
+
+<li>1</li>
+<li>2</li>
+<li>3</li>
+<li>4</li>
+$("li").wrapInner("<font color='red'></font>")
+	这样执行之后 ，代码就变成了
+<li><font color='red'>1</font></li>
+<li><font color='red'>2</font></li>
+<li><font color='red'>3</font></li>
+<li><font color='red'>4</font></li>
+只包装文字
+
+
+==========================================================================================
+
+==========================================================================================
+
+==========================================================================================
+
+<body>
+	<div>
+		<span>冒泡事件</span>
+	</div>
+</body>
+
+click()事件的冒泡事件：假如body、div、和span都添加了click事件，那么点击span的时候，外层的
+所有添加了click事件的元素都会触发click事件
+
+
+
+
+focus() 获取焦点时
+
+blur() 失去焦点时
+
+$.trim(str):去掉前后的空格
+
+parent
+
+find（）寻找当前元素的每个后代元素
+
+
+
+attr("value","aaa"); 把value的值改为aaa
+
+val();
+
+each();循环
+
+text();对元素的文本的重写和读取
+
+html()方法，对html代码的重写和读取
+
+is()方法，var x = $("div:first").is(":hidden");对div这个元素判断是否有:hidden这个选择器的属性
+	返回值为boolean的dom对象
+
+$("div:first").bind("click",function(){//为这个div绑定click事件
+	//alert(this.value);
+	});
+
+unbind()方法，移除某个事件
+
+hover()方法：当鼠标放到某个元素上执行第一个function，移开某个元素执行第二个function
+例子：	$("div:first").hover(function(){},function(){});
+	
+
+toggle()方法：当鼠标第一次点击，执行第一个函数，第二次点击，执行第三个函数，循环
+	$("div:first").toggle(function(){},function(){});
+
+show()：让某个元素显示
+	参数是显示和隐藏的时间，单位为毫秒数
+hide()：让某个元素隐藏
+
+
+========================================================================================
+
+	css样式相关方法
+
+$("div").hasClass("class的值"); 在div里有没有这个值得class，返回参数是boolean
+
+$("div").removeClass("class的值");移除这个class样式，返回值是jQuery对象
+
+$("div").addClass("class的值");添加这个class样式，返回值是jQuery对象
+
+$("div").toggleClass("class的值"); 如果有这个样式，就移除，如果没有，就添加
+
+$("div:first").css("opacity");//opacity这个是透明度，这是获取了这个元素的透明度
+
+$("div:first")css("opacity",0.5);//设置这个元素的透明度为0.5
+
+
+$("div:first").width();返回这个div元素的宽度
+
+$("div:first").height();返回这个div元素的高度
+
+如果带上参数就是修改这个div元素的宽度和高度
+
+
+$("div:first").offset().top
+	获取这个元素再当前视窗中的相对位移
+$("div:first").offset().left
+
+
+
+
+
+
+
+
+
+

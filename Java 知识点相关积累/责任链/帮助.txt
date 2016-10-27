@@ -1,0 +1,8 @@
+			责任链相关项目：FilterWeb
+
+问题：处理request和response，怎么让request先进去先处理，然后等所有request都处理完成之后再处理response，让后进去的response先处理
+
+给doFilter增加一个参数：FilterChain
+
+每次调用doFilter时，让每次处理request完成之后，取得FilterChain参数，调用这个参数的FilterChain方法，让response的处理先等着，然后调用下一个Filter的doFilter方法，也先处理request请求，然后再调用传过来的FilterChain的doFilter方法，让这个的response请求再等着，然后用一个index记录当前的Filter的下标，如果当前Filter下标等于Filters集合的size，就return出来，
+

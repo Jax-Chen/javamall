@@ -1,0 +1,22 @@
+
+	日期的转换：
+在JSP显示页面：<s:date name="d" format="yyyy-MM-dd HH:mm:ss">
+
+在action里：
+Date d;
+
+URL：htttp://localhost:8080/bbs?1980-08-08 12:11:11
+
+
+
+
+	Map类型转换：
+
+在JSP显示页面：<s:property value="map">
+
+在action里：
+Map map；
+
+URL：http://localhost:8080/bbs?map['username']&map['Jax-Chen']
+
+

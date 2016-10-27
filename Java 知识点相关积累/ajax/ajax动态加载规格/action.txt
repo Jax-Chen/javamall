@@ -1,0 +1,10 @@
+		public String getProductBySpec(){
+		
+		String d_sn = (String) ThreadContextHolder.getSessionContext().getAttribute("d_sn");
+		distributors = this.distributorManager.getDistributorsBySn(d_sn);
+		
+		Product product = productManager.getBySpecs(specs,Integer.parseInt(goodsid),distributors);
+		this.json = JsonMessageUtil.getObjectJson(product, "product");
+		return JSON_MESSAGE; 
+
+

@@ -1,0 +1,95 @@
+
+1、准备工作：引入相关的hibernate和spring需要的jar包
+
+2、在bean.xml文件里配置：、
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd"
+	default-autowire="byName" default-lazy-init="true">
+
+	<!-- 从jdbc.properties文件理读取信息 -->
+	<bean id="config"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:jdbc.properties</value>
+		</property>
+	</bean>
+
+	<!-- 从properties文件里读取信息 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="username" value="${connection.username}"></property>
+		<property name="password" value="${connection.password}"></property>
+		<property name="url" value="${connection.url}"></property>
+		<property name="driverClassName" value="${connection.driverClassName}"></property>
+	</bean>
+
+	<!-- 配置SessionFactory，把dataSource注入给SessionFactory，然后整合Hibernate和Spring -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<!-- 注入给SessionFactory的数据库连接池 -->
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.bjsxt.model</value><!-- 需要用hibernate映射的model层的类 -->
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<!-- hibernate的相关配置，例如方言，SQL语句是否分行等等，都可以写在配置文件里 -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- 实现AOP的类，交给spring管理 -->
+	<bean id="logInterceptor" class="com.bjsxt.aop.LogInterceptor" />
+
+	<!-- 不用注解的方式，用xml文件配置的方式来实现AOP，实现切面 -->
+	<aop:config>
+		<aop:pointcut
+			expression="execution(public void com.bjsxt.dao.impl.UserDAOImpl.save(com.bjsxt.model.User))"
+			id="ServicePointCut" />
+
+		<aop:aspect id="logInterceptor" ref="logInterceptor">
+			<aop:before method="before" pointcut-ref="ServicePointCut" />
+		</aop:aspect>
+
+	</aop:config>
+
+
+	<!-- DAO层的注入 -->
+	<bean name="userDAO" class="com.bjsxt.dao.impl.UserDAOImpl">
+		<property name="id" value="1"></property>
+	</bean>
+
+	<!-- service层对象初始化  -->
+	<bean id="userService" class="com.bjsxt.service.UserService">
+		<!-- <property name="userDAO" ref="userDAO1" /> -->
+
+	</bean>
+
+</beans>
+
+
+
+3、jdbc.properties配置文件的相关信息
+
+#database connection config
+connection.username=root
+connection.password=root
+connection.url=jdbc:mysql://localhost:3306/spring
+connection.driverClassName=com.mysql.jdbc.Driver
+
+
+4、在Model层里写上@Entity、@Id、@GeneratorValue

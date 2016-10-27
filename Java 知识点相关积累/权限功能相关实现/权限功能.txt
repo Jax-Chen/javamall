@@ -1,0 +1,234 @@
+
+
+
+生成权限类  权限和用户时多对多的关系
+
+在 用户和权限中抽取一层角色层：
+
+用户-----角色------权限
+
+角色对用户：多对多
+
+权限对角色：多对多
+
+
+权限就是对控制功能的使用
+控制功能就是对url访问的控制使用
+
+
+具体要做的功能：
+
+一、 初始化数据
+	权限数据
+	超级管理员
+
+二、分配权限
+	给角色分配权限
+	用户的权限就是用户所有角色的权限
+
+三、使用权限
+	1、登陆、注销
+	2、左侧的菜单就是根据权限显示的
+	3、右侧页面中的链接是根据权限显示的
+	4、拦截每一个action请求，验证用户是否有权限访问
+
+
+
+
+
+具体代码思路和过程在下方：
+
+=======================================================================================
+生成权限类：Privilege
+	成员变量：id：Long
+		roles：Set<Role>
+		parent:Privilege
+		children:Set<Privilege>
+		url:String
+		name:String	//权限名称
+		icon：String	//顶级权限图标对应的图片的名称
+
+=======================================================================================
+
+生成一个工具类：Installer类
+	用于初始化权限的数据
+
+	在类里面创建权限对象，设置上信息，然后利用hibernate往数据库里插入
+=======================================================================================
+
+在RoleAction里添加setPrivilege、和setPrivilegeUI
+	在设置权限的UI界面里取出所有的权限，循环
+		然后数据库里已经有的要回选
+=======================================================================================
+
+树状显示所有权限，参考txt
+=======================================================================================
+
+使用权限：
+在服务器启动的时候，把权限从数据库里取出来，放到ServletContext里
+///拿到ServletContext
+		ServletContext application = sce.getServletContext();
+		
+		//从spring提供的web工具类里通过传参数ServleteContext对象拿到ApplicationContext
+		ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(application);
+		System.out.println("ac的值：" + ac);
+		
+		//拿到服务器启东时spring帮我们注入（再beans.xml里配置的对象）的privilegeManager对象
+		PrivilegeManager privilegeManager = (PrivilegeManager)ac.getBean("privilegeManager");
+		
+		//拿到顶级菜单权限的集合
+		List<Privilege> topPrivilegeList = privilegeManager.findTopPrivilege();
+		
+		//把顶级权限设置到ServletContext（application）里
+		application.setAttribute("topPrivilegeList", topPrivilegeList);
+		
+		System.out.println("---- 已经准备好顶级权限的菜单 ----");
+
+=======================================================================================
+
+然后在权限菜单的显示页面里循环权限集合
+ <s:iterator value="#application.topPrivilegeList" >
+
+用jqueryt做到菜单的效果
+
+=======================================================================================
+
+显示全部的权限菜单后，想办法做到显示有权限的菜单，没权限的菜单就不显示
+
+用OGNL表达式在JSP页面<s:iterator value="#application.topPrivilegeList">里判断
+<s:if test="#session.user.hasPrivilegeByName(name)">如果有才显示循环的内容
+
+//这里的name是#application.topPrivilegeList遍历时的单个对象的name
+
+
+
+判断是否有权限的方法
+
+public boolean hasPrivilegeByName(String privilegeName){
+		//判断是否是超级管理员
+		if(Admin()){
+			return true;
+		}
+		
+		//判断普通用户是否有这个权限
+		for(Role role : this.roles){
+			for(Privilege privilege : role.getPrivileges()){
+				if(privilegeName.equals(privilege.getName())){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean Admin(){
+		return "admin".equals(this.loginName);
+	}
+
+=====================================================================================
+
+解决连接地址是否有权限的问题，例如部门管理里的删除权限是没有的，就不显示删除这个连接
+
+这里可以用到修改struts2源码的办法，创建一个类和struts2<a>标签类一模一样的类，然后覆盖后，在覆盖后的类里面作修改，判断struts2里的action里的url和用户的拥有的权限的url一样，就显示，如果不一样就不显示
+
+
+=====================================================================================
+
+做完了没有权限的设置后，然后就对每个连接进行拦截：配置拦截器
+
+详细查看：（配置struts2的拦截器验证权限Interceptor.文件夹）
+
+
+=======================================================================================
+
+在拦截器里完成是否登陆、有没权限访问页面的功能：
+	参考OA_SSH项目里的com.cjc.oa.interceptor.checkPrivilegeInterceptor类
+
+
+	public String intercept(ActionInvocation invocation) throws Exception {
+		
+//		System.out.println("-----------拦截之前");
+//		String result = invocation.invoke();
+//		System.out.println("-----------拦截之后");
+//		return result;
+		
+		//从ActionContext里拿到User对象
+		User user = (User)ActionContext.getContext().getSession().get("user");
+		
+		//获取当前访问的URL,并去掉当前程序的前缀，只留存在数据库里具体的action名称
+		String nameSpace = invocation.getProxy().getNamespace();
+		String actionName = invocation.getProxy().getActionName();
+		String privilegeURL = nameSpace + actionName;
+		
+		//假如nameSpace不为空的时候判断
+		if(nameSpace.endsWith("/")){
+			privilegeURL = nameSpace + actionName;
+		}else{
+			privilegeURL = nameSpace + "/" + actionName;
+		}
+		
+		//要去掉url地址的‘/’
+		if(privilegeURL.startsWith("/")){
+			privilegeURL = privilegeURL.substring(1);
+		}
+		
+		//如果用户未登录，就让用户去登陆
+		if(user == null){
+			//用户未登录，如果去的url地址是去登陆界面，就放行
+			if(privilegeURL.startsWith("userAction_login")){//userAction_login、userAction_loginUI两种
+				return invocation.invoke();
+				
+			}//如果访问不url地址不是去登陆界面，就返回到登陆界面userAction_loginUI
+			else{
+				//注意：在这里返回的是struts2的result结果，而不是url地址
+				return "loginUI";
+			}
+			
+			
+		//如果已经登陆，就判断是否有权限
+		}else{
+			//如果有权限就放行，这里验证权限是拿user对象的权限去和数据库里所有的权限比较，所以这里就暴露一个问题
+			//像主页、登陆、登陆UI在数据库是没有权限的，所以比较的时候，会返回true，所以需要在判断是否存在URL的时候
+			//还要判断如果是数据库里没有的URL就直接放行
+			if(user.hasPrivilegeByURL(privilegeURL)){
+				return invocation.invoke();
+				
+			//如果没有权限，就转到没有权限的提示页面
+			}else{
+				return "noPrivilegeError";
+			}
+			
+			
+		}
+		
+		
+	}
+
+
+========================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

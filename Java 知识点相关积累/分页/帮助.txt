@@ -1,0 +1,193 @@
+
+先分析分页需要用到的数据
+
+
+
+创建分页用的javaBean：PageBean，里面包含分页需要的信息，具体如下
+
+public class PageBean {
+
+	//传递的参数
+	private int currentPage;//当前页
+	private int pageSize;//每页显示多少条记录
+	
+	//数据库
+	private List recordList;//本页的数据列表
+	private int recordCount;//总记录数
+	
+	//计算
+	private int pageCount;//总页数
+	private int beginPageIndex;//页码列表的开始索引
+	private int endPageIndex;//页码列表的结束索引
+
+	/**
+	 * 只接受4个必要的参数，计算出其他3个的值
+	 * @param currentPage
+	 * @param pageSize
+	 * @param recordList
+	 * @param recordCount
+	 */
+	public PageBean(int currentPage,int pageSize,List recordList,int recordCount){
+		this.currentPage = currentPage;
+		this.pageSize = pageSize;
+		this.recordList = recordList;
+		this.recordCount = recordCount;
+		
+		//计算出pageCount的值
+		pageCount = (recordCount + pageSize-1)/pageSize;
+		
+		//计算出beginPageIndex和endPageIndex的值
+		//>>如果总页数小于10页，则共有多少页显示多少页
+		if(pageCount <= 10){
+			beginPageIndex = 1;
+			endPageIndex = pageCount;
+		}
+		//>>如果总页数大于10页，则显示当前页的附近10页，比如当前页为第12页，则从第8页开始，显示到17页
+		else{
+			beginPageIndex = currentPage-4;
+			endPageIndex = currentPage+5;
+			
+			//如果开始页在计算后小于1，则代表当前页在前四页，所以开始页为第一页
+			if(beginPageIndex < 1){
+				
+				beginPageIndex =1;
+				endPageIndex = 10;
+			}
+			//如果结束页在计算后大于总页数，那么代表当前页在最后五页中，所以结束页为最后一页
+			if(endPageIndex > pageCount){
+				beginPageIndex = pageCount -9;
+				endPageIndex = pageCount;
+			}
+			
+			
+		}
+		
+		
+	}
+
+
+
+============================================================================
+
+
+然后在需要用到分页的地方，都创建PageBean，，例如在Action里需要用到PageBean，然后在JSP页面拿到PageBean里面的属性
+
+		//Action类里分页的代码
+		PageBean pageBean = replyManager.getPageBean(pageNum,topic);
+		ActionContext.getContext().getValueStack().push(pageBean);
+
+
+============================================================================
+
+
+Dao层getPageBean的方法的具体实现
+
+
+	public PageBean getPageBean(int pageNum, Topic topic) {
+		
+		int pageSize = Configuration.pageSize;
+		
+		List recordList = this.getSession()
+				.createQuery("from Reply r where r.topic = ? order by r.postTime")
+				.setParameter(0, topic)
+				.setFirstResult((pageNum-1) * pageSize)
+				.setMaxResults(pageSize)
+				.list();
+		
+		Long recordCount = (Long) this.getSession()
+				.createQuery("select count(*) from Reply r where r.topic = ? ")
+				.setParameter(0, topic)
+				.uniqueResult();
+		
+		PageBean pageBean = new PageBean(pageNum,pageSize,recordList,recordCount.intValue());
+		return pageBean;
+	}
+
+
+
+整体流程，JSP页面要用的信息，跟Action拿，Action跟Manager层拿，然后放到栈顶或者堆里面，提供给JSP
+
+然后Manager层和Dao层拿，Dao层拿到传过来的参数pageNum和Topic，然后在数据库里查询信息，然后把查询到
+
+的信息，传给PageBean的构造方法，得到所有的PageBean的属性，然后就可以再JSP页面拿到属性显示
+
+
+参考OA_SSH项目的TopicAction、ReplyDaoImpl、PageBean和topicAction里的show.jsp页面
+
+
+======================================================================================
+
+专门显示分页的JSP页面
+
+<%@ include file="/WEB-INF/jsp/public/pageView.jspf" %>
+参考OA_SSH项目里的这个页面
+
+<div id=PageSelectorBar>
+	<div id=PageSelectorMemo>页次：${currentPage}/${pageCount}页 &nbsp;
+		每页显示：${pageSize}条 &nbsp; 总记录数：${recordCount}条</div>
+	<div id=PageSelectorSelectorArea>
+		<!--
+				<IMG SRC="${pageContext.request.contextPath}/style/blue/images/pageSelector/firstPage2.png"/>
+				-->
+		<a href="javascript:gotoPageNum(1)" title="首页" style="cursor: hand;">
+			<img
+			src="${pageContext.request.contextPath}/style/blue/images/pageSelector/firstPage.png" />
+		</a>
+
+
+		<s:iterator begin="beginPageIndex" end="endPageIndex" var="num">
+			<s:if test="currentPage == #num">
+				<span class="PageSelectorNum PageSelectorSelected">${num}</span>
+			</s:if>
+			<s:else>
+				<span class="PageSelectorNum" style="cursor: hand;"
+					onClick="gotoPageNum(${num});">${num}</span>
+			</s:else>
+		</s:iterator>
+
+		<!--
+				<IMG SRC="${pageContext.request.contextPath}/style/blue/images/pageSelector/lastPage2.png"/>
+				-->
+		<a href="javascript:gotoPageNum(${pageCount})" title="尾页"
+			style="cursor: hand;"> <img
+			src="${pageContext.request.contextPath}/style/blue/images/pageSelector/lastPage.png" /></a>
+
+		转到： <select id="pn" onchange="gotoPageNum(this.value)">
+
+			<s:iterator begin="1" end="pageCount" var="num">
+				<option value="${num}">${num}</option>
+			</s:iterator>
+		</select>
+
+		<!-- 选择框回显页码 -->
+		<script type="text/javascript">
+						$("#pn").val(${currentPage});				 	
+				 </script>
+
+	</div>
+</div>
+
+
+
+查看传智播客的OA项目的18OA（OA项目第8天）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

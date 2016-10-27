@@ -1,0 +1,67 @@
+				hibernate入门初级文档
+	
+第一种使用类映射的方式（xml方式）：
+
+1、去官网下载jar包
+
+2、 学习建User-library-hibernate,并加入相应的jar包
+a) 项目右键-buildpath-configure build path-add library—
+b) 选择User-library,在其中新建 libraray,命名为 hibernate
+c) 在该library中加入hibernate所需jar包
+
+3、引入相关的sql驱动包
+
+4、创建hibernate配置文件hibernate.cfg.xml
+	可去网上查看
+	修改对应的数据库连接的
+	 <mapping resource="com/bjsxt/hibernate/model/Student.hbm.xml"/>
+
+5、建立Student类
+
+7、建立Student映射文件 Student.hbm.xml
+	进行相关配置，可查看../例子 文件里的简单例子
+
+8、在StudentTest类里面（主要运行类）
+	……
+	Configuration cfg = new Configuration();
+	SessionFactory sf = cfg.configure().buildSessionFactory();
+	Session sesion = sf.openSession(0;
+	session.beginTransaction();
+	session.save(s);
+	session.getTransaction().commit();
+	session.close(0;
+	sf.close();
+
+
+
+第二种使用Annotation的方式（注解的方式）
+
+1、去官网下载jar包
+
+2、 学习建User-library-hibernate,并加入相应的jar包
+a) 项目右键-buildpath-configure build path-add library—
+b) 选择User-library,在其中新建 libraray,命名为 hibernate
+c) 在该library中加入hibernate所需jar包
+
+3、引入相关的sql驱动包
+
+4、创建hibernate配置文件hibernate.cfg.xml
+	可去网上查看
+	修改对应的数据库连接的
+	<mapping class="com.bjsxt.hibernate.model.Teacher"/>
+
+5、建立Teacher类
+	在Teacher类里添加@Entity（数据库对应的实体类）
+	在Teacher类里添加@Id（对应的主键）
+
+6、在TeacherTest类里面（主要运行类）
+	……
+	 Configuration cfg = new Configuration();
+	 SessionFactory sf = cfg.configure().buildSessionFactory();
+	 Session session = sf.openSession();
+	 session.beginTransaction();
+ 	 session.save(t);
+	 session.getTransaction().commit();
+	 session.close();
+	 sf.close();
+	

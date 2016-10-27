@@ -1,0 +1,26 @@
+
+1、在web.xml文件添加配置：
+	    <!-- 用于指定Spring的配置文件路径 -->  
+        <context-param>  
+            <param-name>contextConfigLocation</param-name>  
+            <param-value>classpath:beans.xml</param-value>  
+        </context-param>  
+       
+        <!-- 服务器启动时，通过监听器初始化Spring的配置环境   
+            监听器，默认加载文件是：/WEB-INF/applicationContext.xml  
+        -->  
+        <listener>  
+            <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>  
+        </listener> 
+
+
+2、在spring的bean.xml文件里配置action的bean（注入）
+		<!-- 配置struts2的Action  -->
+	<bean id="UserAction" class="com.bjsxt.action.UserAction">
+	</bean>
+
+
+3、引入jar包：struts2-spring-plugin-2.3.3.0.jar
+
+
+4、在UserAction类里聚合UserManager（保存有UserManager的成员变量，并设有get、set方法）

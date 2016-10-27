@@ -1,0 +1,142 @@
+			对象关系映射---一个类的成员变量里面有其他成员变量	
+
+1、一对一的关系（单项外健）：Husband类里有成员变量Wife，
+	在getWife（）方法上添加：@OneToOnde
+	会自动给Husband表生成参考Wife表的外键，名字为wife_id
+	如果想要改变外键名字，添加：@JoinColum（name="wifeId"）
+
+
+
+2、一对一关系（双向外键）：Husband类里有成员变量Wife，
+	在getWife（）方法上添加：@OneToOnde
+	会自动给Husband表生成参考Wife表的外键，名字为wife_id
+	如果想要改变外键名字，添加：@JoinColum（name="wifeId"）
+
+	然后再在Wife类里也有成员变量Husband
+	在getHusband（）方法里添加:@OneToOne（MappedBy="wife"），
+	注意：设置了这个以后，在wife表里就不会有Husband_id这个字段
+		"wife"为getWife方法面的wife
+	规律：凡是双向外键，必须设置mappedBy
+
+
+
+3、一对一联合主键关联：先在wife类里设置好联合主键，然后在husband类里设置：
+	@OneToOne，然后就会在husband表里生成wife_id和wife_name字段
+	假如要自行设定联合主键关联字段的名称：
+		@JoinColumns({
+			@JoinColumn(name="wifeId",referencedColumnName="id"),
+			@JoinColumn(name="wifeName",regerencedColumnName="name")
+		//注：这里的name是新的字段名，regerencedColumnName是参考的wife的属性名
+		})
+		
+
+
+4、组件映射：wife是husband的成员变量，在数据库里只显示一张husband表，然后表里面的字段有wife		类和husband类的所有属性，操作如下：
+		在Husband类的getWife（）方法上添加：@Embedded
+			例子：hibernate_0800_component
+
+		在Wife类里面什么也不用写
+
+
+
+5、多对一关联：多个User类可以对应一个Group，在User类里有成员变量Group，生成user表和group表
+	在user表里有group_id字段，操作如下：
+		在User类里的getGroup（）方法上面添加：@ManyToOne
+		两个类都添加@Entity、@Id、@GeneratedValue
+
+
+
+6、一对多关联：一个Group类可以对应多个User类，在Group类里里有Set<User> users成员变量，
+	在Group类的getUsers方法上添加：@OneToMany，hibernate默认看成多对多的关系
+		会在数据库里创建3个表，一个group表、一个user表、另外一个user_group表
+			在user_group表里有user_id字段和group_id字段
+	
+	在getusers（）方法上添加：@JoinColumn（name="groupId"）
+	这样就只会生成user、group两张表，并且在user表里会有groupId字段
+
+
+
+
+7、一对多---多对一双向关联：在Group类里有Set<User> users成员变量，在User类里有Group成员变量
+	在getUsers（）方法上添加：@OneToMany	在getGroup（）方法上添加：@ManyToOne
+		如果这样会在user表里生成2个groupId字段
+			所以需要在getUsers（）方法上(一的那方)添加：@OneToMany（mappedBy="group"）
+				这样生成表的时候就不考虑Group这个类的外键
+	
+
+
+8、多对多单项关联：在Teacher类里有Set<Student> students，在Student类里不知道Teacher的存在
+	两个类都添加@Entity、@Id、@GeneratedValue
+		在getStudents（）方法上添加@ManyToMany
+			会在数据库里创建三张表：teacher表、student表、teacher_student表
+
+	假如需要修改teacher_student表的名字或者字段名称，可以如下设置：
+	在getStudents（）方法上面添加：
+		@JoinTable(name="t_s",	//这为表的名字
+			joinColumns={@joinColumn(name="teacher_id")},
+			inverseJoinColumns={@JoinColumn(name="student_id")}		
+		)
+
+		注：joinColumns里配置的是参考Teacher这个类产生的外键字段的名称
+		    inverseJoinColumns配置的是另外一个
+
+	
+
+9、多对多双向，在数据库表里的显示和多对多单项关联是一样的
+	在类里不同的是|：Teacher类里有成员变量Set<Student>，在Student类里有Set<Teacher>
+		在Student类的getTeacher（）方法上面添加：@ManyToMany（mappedBy="students"）
+
+
+
+
+
+10、集合映射
+
+
+
+
+11、继承映射：假如有父类Person、和两个子类Student类、Teacher类
+
+在数据库里表的设计分为三种：single_table、table_per_class、joinTable
+					(一张表包含所有)、（一个类一张表）、（表连接）
+
+
+第一种：会只生成一张Person表、然后里面包含了三个类的所有属性，然后还回有另外一个属性，区分	是哪个类，具体设置：
+		在Person父类里设置：
+		@Entity
+		@Inheritance(strategy=InheritanceType.SINGLE_TABLE)//设置为三种中的哪一种
+		@DiscriminatorColumn	//区分是哪个类的那个字段的相关设置			(name="discriminator",discriminatorType=DiscriminatorType.STRING)
+		@DiscriminatorValue("person")//设置区分字段的数据
+
+		在子类里面设置：@Entity、@DiscriminatorValue("student")
+
+	注意：@DiscriminatorValue为插入数据时 ，区分是哪个类的字段的数据
+
+
+
+第二种：
+
+第三种：每一个类生成一个表，主表Person里面会有所有共有的属性，然后Student表的id参考Person表的id字段（相同），Teacher表也一样，然后Student表里会有自己的属性的字段，Teacher表也一样
+	
+	设置如下：@Entity
+		@Inheritance(strategy=InheritanceType.JOINED)//设置为三种中的哪一种
+		然后在子类里面设置@Entity就可以了
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+		
+

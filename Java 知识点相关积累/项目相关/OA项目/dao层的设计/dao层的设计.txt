@@ -1,0 +1,16 @@
+
+1、创建一个BaseDao的接口
+	里面为所有实体类共有的方法
+		例如save、delete、update、getById
+
+2、创建一个BaseDaoImpl的类实现BaseDao接口
+	实现BaseDao接口的所有方法
+
+3、创建UserDao、RoleDao继承BaseDao方法
+	在UserDao里写上自己的方法：findByNameAndPassowrd
+	在RoleDao里写上自己的方法：
+
+4、创建UserDaoImpl、RoleDaoImpl类继承BaseDaoImpl类，分别实现UserDao接口和RoleDao接口
+
+
+然后使用泛型

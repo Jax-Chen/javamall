@@ -1,0 +1,41 @@
+12、树状映射：Hibernate_1000_Tree
+	在Org类里面有：int id;	String name;	Org parent;	Set<Org> children;
+	把这个Org类看成两个类，然后在getParent（）上添加@ManyToOne
+	在getChildren（）方法上添加@OneToMany（MappedBy="parent"）
+
+   树状存储：都设置好关联
+
+   树状的显示：
+
+
+
+1、先在Action类里面取出所有顶层的数据
+	departments = departmentManager.findTopList();
+		在数据库里查询父亲为null的集合
+
+2、创建一个工具类，专门用作树状显示：
+	departments = DepartmentUtils.getAllDepartments(departments);
+	
+3、	public static List<Department> getAllDepartments(List<Department> topList){
+		
+		List<Department> list = new ArrayList<Department>();
+		return tree(topList,"┠",list);
+	}
+
+
+
+	private static List<Department> tree(Collection<Department> c,String pre,List<Department> list1){
+		for(Department d : c){
+			
+			Department copy = new Department();
+			copy.setId(d.getId());
+			copy.setName(pre + d.getName());
+			list1.add(copy);
+			if(d.getChildren().size()>0){
+				
+				tree(d.getChildren(), "　"+pre,list1);
+			}
+		}
+		return list1;
+	}
+	

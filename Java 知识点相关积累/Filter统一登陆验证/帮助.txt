@@ -1,0 +1,3 @@
+把ServletRequest强制转成HttpServletRequest
+
+拿到URI，判断URI如果不等于login.jsp并且session不等于空，就继续执行，否则return

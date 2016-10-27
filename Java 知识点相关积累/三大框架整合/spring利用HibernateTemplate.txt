@@ -1,0 +1,8 @@
+
+
+在xml文件里面配置：
+	<bean id="hibernateTemplate" 			class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	然后在DAOImpl层保存这个类的聚合关系（存有这个类的成员变量）

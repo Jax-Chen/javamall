@@ -1,0 +1,47 @@
+
+
+
+第一步：创建一个拦截器类 继承 AbstractInterceptor类
+
+public class CheckPrivilegeInterceptor extends AbstractInterceptor{
+
+	public String intercept(ActionInvocation invocation) throws Exception {
+
+		//在执行前做想要做的逻辑		
+		System.out.println("-----------拦截之前");
+		
+
+		//在执行所有action前调用这个方法
+		String result = invocation.invoke();
+		
+		System.out.println("-----------拦截之后");
+		
+		return result;
+	}
+
+
+第二步：在struts.xml文件里配置拦截器
+
+<!-- 配置拦截器 -->
+<interceptors>
+	
+	<!-- 声明一个拦截器 -->
+	<interceptor name="checkePrivilege" class="com.cjc.oa.interceptor.CheckPrivilegeInterceptor"></interceptor>
+	
+		<!-- 在struts2里已经声明了很多拦截器，想要让对权限验证的拦截器放在第一个 -->
+		<interceptor-stack name="defaultStack">
+
+			<interceptor-ref name="checkePrivilege"></interceptor-ref>
+
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+
+		</interceptor-stack>
+		
+</interceptors>
+
+
+
+配置拦截器之后，在调用所有的acton里的方法的时候，都会调用逻辑
+
+
+

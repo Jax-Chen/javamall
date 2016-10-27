@@ -1,0 +1,81 @@
+
+
+一、导入3个jquery包
+
+1，导入的jQuery.js与jquery.validate.js等文件，注意顺序不要颠倒
+<script type="text/javascript" src="jquery.js"><script/>
+<script type="text/javascript" src="jquery.metadata.js"><script/>
+<script type="text/javascript" src="jquery.validate.js"><script/>
+
+
+二、指定哪个（或哪些）表单要在提交前先进行验证
+
+2，<script type="text/javascript">
+   		$(function(){
+        	$("#testForm").validate();
+    	});
+</script>
+//这里为name叫testForm的表单需要验证
+
+
+
+这里可以这么填，验证所有的表单，然后具体在表单里怎么填，再设置：
+	<script type="text/javascript">
+   		$(function(){
+        	$("form").validate();
+    	});
+</script>
+
+意思为所有的form
+
+
+
+三、具体要验证什么，在class里面填写
+
+例如：
+用户名：<input type="password" name="password" class="required">
+
+电子邮件：<input type="text" name="email" class="required email">
+
+密码：<input type="password" name="password" id="password1"
+
+class="{required: true, minlength: 3}">//最小字符长度为3
+
+再次输入密码：<input type="password" name="password2" 
+class="{equalTo:'[#password1]'} required">
+
+
+
+四、具体有哪些规则可以用，参考doc文档，
+
+
+五、修改验证提示消息的内容(批量修改默认的)，也可以修改单个的
+
+<script type="textjavascript">
+jQuery.extend(jQuery.validator.messages, {
+    required: "请填写本字段",
+    remote: "验证失败",
+    email: "请输入正确的电子邮件",
+    url: "请输入正确的网址",
+    date: "请输入正确的日期",
+    dateISO: "请输入正确的日期 (ISO).",
+    number: "请输入正确的数字",
+    digits: "请输入正确的整数",
+    creditcard: "请输入正确的信用卡号",
+    equalTo: "请再次输入相同的值",
+    accept: "请输入指定的后缀名的字符串",
+    maxlength: jQuery.validator.format("允许的最大长度为 {0} 个字符"),
+    minlength: jQuery.validator.format("允许的最小长度为 {0} 个字符"),
+    rangelength: jQuery.validator.format("允许的长度为{0}和{1}之间"),
+    range: jQuery.validator.format("请输入介于 {0} 和 {1} 之间的值"),
+    max: jQuery.validator.format("请输入一个最大为 {0} 的值"),
+    min: jQuery.validator.format("请输入一个最小为 {0} 的值")
+});
+
+<script/>
+
+
+五.1、修改单个显示信息的内容
+
+{required: true, messages:{required: '请填写用户名'}}
+

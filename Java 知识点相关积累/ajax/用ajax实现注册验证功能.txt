@@ -1,0 +1,65 @@
+JSP:
+
+<script type="text/javascript">
+    
+    	$(function(){
+    		$("input[name='name']").change(function(){
+    			
+    			$("#nameValidate").empty();
+    			
+				var name = $("input[name='name']").val();
+				var url = "departmentAction_validate1";
+				var args = {"name":name,"time":new Date()};
+				
+ 				  $.getJSON(url,args,function(data){
+					$("#nameValidate").append("<font color='red'>" + data + "</font>");
+				});   
+    		});
+    	});
+    
+    </script>
+
+
+
+
+
+struts.xml
+
+<result name="success" type="json">
+				<param name="root">flag</param>
+			</result>
+
+
+
+departmentAction的validate1方法
+
+
+	String flag = "";
+	String validate1(){
+		System.out.println("ajax----------------------------");
+		System.out.println("ajax-----------name : " + model.getName());
+		
+		List<Department> departments = departmentManager.findAll();
+		
+		for(Department d : departments){
+			if(model.getName() == d.getName() || model.getName().equals(d.getName())){
+				flag = "用户名已经存在";
+			}
+		}
+		if(flag == "" || flag.equals("")){
+			flag = "用户名可以使用";
+		}
+	
+		System.out.println("flag ------------------------" + flag);
+		return "success";
+	}
+
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+
+

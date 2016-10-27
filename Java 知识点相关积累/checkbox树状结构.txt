@@ -1,0 +1,134 @@
+
+
+
+
+一、全选功能的实现：
+
+1、引入jQuery的包
+
+function selectAll(checkedValue){
+    		$("input[type=checkbox][name=resourceIdList]").attr("checked", checkedValue);
+    	}
+
+
+<input type="CHECKBOX" id="cbSelectAll" onClick="selectAll(this.checked)"/>
+
+
+
+二、用treeview控件，自动实现树状的显示
+		<!-- 1，引入js文件与css文件 -->
+		<!-- 引入jquery的jar包 -->
+		<script type="text/javascript" src="lib/jquery.js"></script>
+		<script type="text/javascript" src="jquery.treeview.js"></script>
+		<link rel="stylesheet" type="text/css" href="jquery.treeview.css">
+	</head>
+	<body>
+
+		<!-- 2，使用ul与li显示出数据 -->
+		<ul id="tree" class="filetree">//id用于找到这个
+			<li><span class="folder">系统管理</span>
+				<ul>
+					<li><input type="checkbox">岗位管理
+						<ul>
+							<li>岗位添加</li>
+							<li>岗位删除</li>
+						</ul>
+					</li>
+					<li>部门管理</li>
+					<li>用户管理</li>
+				</ul>
+			</li>
+			
+			<li>网上交流</li>
+		</ul>
+
+		<!-- 3，指定某ul显示为树状 -->
+			//tree为ul的id，treeview为插件的里的方法
+		<script type="text/javascript">
+			$("#tree").treeview();
+		</script>
+
+
+
+三、先写出没有效果的带有回选的所有权限
+	<s:iterator value="#privilegeList">
+	<input type="checkbox" name="privilegeIds" value="${id}" id="cb_${id}" 
+		<s:property value="%{id in privilegeIds ? 'checked' : ''}"/>
+	>
+	<label for="cb_${id}">${name}</label>
+	<br/>
+</s:iterator>
+
+
+
+四、把数据库里拿出来的第三步和引用的控件第二步合并---------ur套iterator套li---------------ul套iterator套li--------------
+
+
+
+<%-- 第一层 --%>
+							<ul id="tree" class="filetree">
+								<s:iterator value="topPrivileges" var="x">
+									<li> <input type="checkbox" name="privilegeIds" value="${id}" id="cb_${id}" <s:property value="%{#x.id in model.privileges.{id} ? 'checked' : ''}"/>>
+										<label for="cb_${id}">${name}</label> 
+										
+										<%-- 第二层 --%>
+										<ul>
+											<s:iterator value="children" var="y">
+												<li><input type="checkbox" name="privilegeIds" value="${id}" id="cb_${id}" <s:property value="%{#y.id in model.privileges.{id} ? 'checked' : ''}"/>>
+												<label for="cb_${id}">${name}</label>
+													
+													第三层
+													<ul>
+														<s:iterator value="children" var="z">
+														<li>
+															 <input type="checkbox" name="privilegeIds" value="${id}" id="cb_${id}" <s:property value="%{#z.id in model.privileges.{id} ? 'checked' : ''}"/>>
+																<label for="cb_${id}">${name}</label>
+														</li>
+														</s:iterator>
+														
+													</ul>
+													
+												</li>
+											</s:iterator>
+										</ul> 
+									</li>
+								</s:iterator>
+							</ul>
+
+
+
+
+
+
+
+五、加上jQuery的代码，让checked的选择能带上其他的选择
+
+
+<script type="text/javascript">
+		$(function(){
+			
+			// 给所有的权限复选框添加事件
+			$("[name=privilegeIds]").click(function(){
+
+				// 自己选中或取消时，把所有的下级权限也都同时选中或取消
+				$(this).siblings("ul").find("input").attr("checked", this.checked);
+				
+				// 当选中一个权限时，也要同时选中所有的直系上级权限
+				if(this.checked){
+					$(this).parents("li").children("input").attr("checked", true);
+				}
+				// 当取消一个权限时，同级没有选中的权限了，就也取消他的上级权限，再向上也这样做。
+				else{
+					if( $(this).parent().siblings("li").children("input:checked").size() == 0 ){
+						$(this).parent().parent().siblings("input").attr("checked", false);
+						
+						var start = $(this).parent().parent();
+						if( start.parent().siblings("li").children("input:checked").size() == 0 ){
+							start.parent().parent().siblings("input").attr("checked", false);
+						}
+					}
+				}
+			});
+			
+		});
+	</script>

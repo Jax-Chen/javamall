@@ -1,0 +1,15 @@
+数据库：
+	库名：项目名
+
+	表的命名：_Model名
+
+	字段名：保持和属性名一样
+
+用层来划分包：com.bjsxt.bbs.action.
+		com.bjsxt.bbs.service
+		com.bjsxt.bbs.model
+		com.bjsxt.bbs.Dao
+
+Action XXXXAction
+
+namespace 

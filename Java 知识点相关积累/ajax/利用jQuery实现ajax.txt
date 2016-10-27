@@ -1,0 +1,116 @@
+
+ajax传输方式有三种：html、xml、JSON
+
+=========================================================================================
+			用jQuery的load方法读取html代码显示到JSP页面
+
+<a href="test1.html"></a>
+<a href="test2.html"></a>
+<a href="test3.html"></a>
+
+<div id="details"></div>
+
+$(fucntion(){
+	$("a").click(function(){
+		
+		//可以再url后面跟上jQuery的选择器
+		var url = this.href + " h2 a";
+		//清楚缓存用的
+		var args = {"time:new Date()"};
+		
+		//调用jQuery框架的load方法，传入参数为要访问的url地址，然后args是参数
+		//从test1.html文件里面读取信息，放到id为details的元素的子节点下
+		$("#details").load(url,args);
+		return false;
+	});
+
+});
+
+=========================================================================================
+
+			用jQuery的get方法读取xml代码显示到JSP页面上
+
+<!xml头信息/>
+<xxxx>
+	<name>chen</name>
+	<email>735165876@qq.com</email>
+	<website>http://www.baidu.com</website>
+</xxxx>
+//这里为test1.xml的代码
+---------------------------------------------
+
+
+<a href="test1.xml"></a>
+
+<div id="details"></div>
+
+
+<script type="text/javascript">
+$("a").click(function(){
+	var url = this.href;
+	var args = {"time":new Date()}
+	//get和post方法从xml和Json文件里读取的信息存放在第三个参数的function的参数里
+	$.get(url,args,function(data){
+	//从xml文件里读取信息,需要把data包装成jQuery对象
+	var name = $(data).find("name").text();
+	var email = $(data).find("email").text();
+	var website = $(data).find("website").text();
+	
+	//把从xml文件里读取的信息显示到JSP页面上
+	$("#details").empty().
+			append("<a href=" + website + ">" + website + "</a>"):
+			append("<a href=" + email + ">" + name + "</a>"):		
+	})
+
+});
+</script>
+
+
+=========================================================================================
+
+			用jQuery的getJSON方法读取Json代码显示到JSP页面上
+
+		可以适用get(url,args,"JSON") 或者使用 getJSON(ur,args)
+
+var person = {
+	"name":"Jax-Chen"
+	"email":"735165876@qq.com"
+	"website":"www.baidu.com"
+};
+//这里为test1.js的代码
+---------------------------------------------
+
+
+<a href="test1.js"></a>
+
+<div id="details"></div>
+
+<script type="text/javascript">
+$("a").click(function(){
+	var url = this.href;
+	var args = {"time":new Date()}
+
+	//getJSON方法从js文件里读取的信息存放在第三个参数的function的参数里
+	$.getJSON(url,args,function(data){
+
+		//利用getJSON方法读取到的数据data是一个JSON对象可以直接使用
+		var name = data.person.name;
+		var email = data.person.email;
+		var website = data.person.website;
+	
+		//把从xml文件里读取的信息显示到JSP页面上
+		$("#details").empty().
+			append("<a href=" + website + ">" + website + "</a>"):
+			append("<a href=" + email + ">" + name + "</a>"):		
+	})
+
+});
+</script>
+
+
+
+=========================================================================================
+
+=========================================================================================
+
+=========================================================================================

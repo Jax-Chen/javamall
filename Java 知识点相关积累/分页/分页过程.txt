@@ -1,0 +1,85 @@
+步骤：
+	分析 --> 基本分页 --> 过滤、排序 --> 设计为通用的 --> 目标：通用的分页
+
+================================================================
+
+共10个页码：
+	前4页+当前页+后5页
+或	前10页
+或	后10页
+
+
+
+页面中需要显示的信息有：
+	recordList		本页的数据列表
+	currentPage		当前页
+	pageCount		总页数
+	pageSize		每页显示多少条记录
+	recordCount		总记录数
+	beginPageIndex	页码列表的开始索引（包含）
+	endPageIndex	页码列表的结束索引（包含）
+
+
+
+假设共25条，每页显示10条，则共3页：
+
+		first	max
+----------------------
+第1页	0		10
+第2页	10		10
+第3页	20		10
+
+first = (currentPage - 1) * pageSize
+max   = pageSize
+
+
+
+
+
+pageCount = recordCount / pageSize;
+if(recordCount % pageSize > 0){
+	pageCount ++;
+}
+
+
+		// 计算总页数
+		pageCount = (recordCount + pageSize - 1) / pageSize;
+
+
+// ===================================================================================
+
+方法定义：
+	PageBean getPageBean( int pageNum, String baseHql, Map whereMap, Map orderMap){
+		...
+	}
+
+使用：
+	Map whereMap = new HashMap();
+	whereMap.add("name like ?", "%xx%");
+	whereMap.add("age > ?", 15);
+
+	Map orderMap = new HashMap();
+	orderMap.add("name", true);
+	orderMap.add("age", false);
+
+	getPageBean(3, "FROM User u", whereMap, orderMap);
+
+// ===================================================================================
+
+FROM		
+	实体名
+WHERE
+	条件1 AND 条件2 AND ... 条件n
+ORDER BY 
+	属性1, 属性2, ... 属性n
+
+
+From子句		必须
+Where子句		可选
+OrderBy子句		可选
+
+
+
+t.type=?
+t.id between ? and ?
+t.forum is not null

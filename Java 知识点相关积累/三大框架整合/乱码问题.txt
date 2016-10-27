@@ -1,0 +1,5 @@
+确定中文传输的时候，乱码出现在哪一个步骤
+
+在struts2.xml里设置：<constant name="struts.i18n.encodeing" value="UTF-8"/>
+
+然后在jsp页面里面也都设置成UTF-8

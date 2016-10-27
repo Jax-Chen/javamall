@@ -1,0 +1,28 @@
+
+
+1、引入freemaker的jar包
+
+2、创建templates的folder（java项目中在根目录下创建）
+
+3、在templates目录下创建***.ftl文件（模板文件）
+
+
+
+public class Test1 {
+	public static void main(String[] args) throws Exception {
+		//创建Freemarker配置实例
+		Configuration cfg = new Configuration();
+		
+		cfg.setDirectoryForTemplateLoading(new File("templates")); 
+		
+		//创建数据模型
+		Map root = new HashMap();
+		root.put("user", "老高");
+		
+		//加载模板文件
+		Template t1 = cfg.getTemplate("a.ftl");
+		
+		//显示生成的数据,//将合并后的数据打印到控制台
+		Writer out = new OutputStreamWriter(System.out); 
+		t1.process(root, out);
+		out.flush();

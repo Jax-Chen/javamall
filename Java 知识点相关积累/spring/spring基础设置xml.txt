@@ -1,0 +1,10 @@
+
+1、自动装配---AutoWire
+<bean id="userService" class="com.bjsxt.service.UserService" autowire="default">
+	不设置默认为default为按照名字装配
+		自动设置类的成员变量
+
+2、lazy-init="true" 	设置后在ApplicationContext初始化的时候不会初始化bean里的类
+
+3、init-method="init" destroy-method="destroy" 生命周期，容器初始化和关闭调用的方法
+

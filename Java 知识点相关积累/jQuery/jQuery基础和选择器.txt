@@ -1,0 +1,271 @@
+
+			基础Hello World
+引入jQuery的包
+<script type="text/javascript">
+//相当于onLoad方法
+$(function(){
+	//拿到button那个按钮的对象，调用它click方法，然后具体点击后的方法，写在{}里
+	$("button").click(function(){
+		alert("hello world!");
+	});
+});
+</script>
+
+<button>按钮</button>
+
+=====================================================================================
+
+			jQuery对象和DOM对象之间的关系和转换
+
+DOM对象声明：var btn = xxxx;
+jQuery 对象声明：var $btn = xxxx;（注意：jQuery对象是数组形式）
+
+例子：
+
+$(function(){
+	$("button").click(function(){
+		alert("hello world!");
+
+		var $btn = $("button");
+
+		alert($btn.length);
+
+	});
+});
+
+<button>按钮</button>
+<button>按钮二</button>
+
+	一、把jQuery对象转换成DOM对象
+可以通过jQuery里声明的数组对象的下标来转换成DOM对象，例如：
+var btn = $btn[0]; 或者
+var btn = $btn.get(0);
+	
+	二、把DOM对象转换成jQuery对象:用$()包装DOM的对象
+例子：var btn = document.getElementById("BTN");
+	var $btn = $(btn);
+
+
+<button id="btn">按钮</button>
+
+=====================================================================================
+
+
+			基本选择器
+
+一、使用id选择器，利用$("#DOM元素中id的名字")
+	例子：
+	$(function(){
+		$("#btn1").click(function(){
+			alert("click btn1");
+		}):
+			
+	});	
+
+	<input type="button" id="btn1"></input>
+	
+
+二、使用class选择，$(".DOM元素中class的名字")
+	例子：
+	$(function(){
+		$(".btn1").click(function(){
+			alert("click btn1");
+		}):
+			
+	});	
+
+	<input type="button" class="btn1"></input>
+
+三、选择某种元素，利用$("直接写上某种元素的类型，丽日div，option，li")
+
+例子：
+	$(function(){
+		$("button").click(function(){
+			alert("click btn1");
+		}):
+			
+	});	
+
+	<input type="button" class="btn1"></input>
+
+四、选择页面中DOM的所有元素，利用$("*")-------写上*选择所有的元素
+
+五、选择多个元素，利用","逗号隔开
+
+	例如：$(div,"#btn1")
+	就是选择了所有的div和id为btn1的元素
+	
+
+--------------------------------------------------------------------------------
+
+			层次选择器---选择上一个下一个之类的
+
+选择body中的所有的div：$("body div")-----包括所有的
+
+选择body中所有的div子元素，就是下一级的：$("body > div")
+
+选择id为one的下一个div：$("#one + div")
+
+选择id为two之后所有的div：$("#two ~ div")
+以上只适用于紧挨着的元素
+
+
+以下为不挨着的元素也可以选择
+选择id为two的所有兄弟div：$("#two").siblings("div")
+
+选择id为one之后的第一个span元素：$("#one").nextAll("span:first")
+
+选择id为two之前的所有span元素：$("#two").prevAll("span")
+
+
+--------------------------------------------------------------------------------
+
+			过滤选择器
+
+	基础过滤选择器：
+
+选择div中第一个：$("div:first")
+
+选择div中的最后一个：$("div:last")
+
+选择class不为one的div：$("div:not(.one)")
+
+选择div中索引值为奇数的：$("div:even")
+
+选择div中索引值为偶数的：$("div:odd")
+
+选择div中索引值大于3的：$("div:gt(3)")
+
+选择div中索引值等于3的：$("div:eq(3)")
+
+选择div中索引值小于3的：$("div:lt(3)")
+
+选择div中所有的标题元素：$(":header")
+
+选择div中正在执行动画的：$(":animated")
+
+选择id为one的的span中的第一个：$("#one").nextAll("span:first");
+
+
+	内容过滤选择器：
+
+选择内容包含di的div：$("div:contains('id')")
+
+选择内容为空的div：$("div:empty")
+
+选择包含class为mini元素的div：$("div:has(.mini)")
+
+选择内容不为空的div：$("div:parent")
+
+
+	可见性过滤选择器：
+
+选择可见的div：$("div:visible")
+
+选择不可见的div：$("div:hidden")
+	显示不可见的元素用show方法：
+		$("div:hidden").show("2000")
+			show方法的参数为显示用的时间
+
+选择表单隐藏域：$("input:hidden").val()
+	选择表单元素的value值
+		或者
+	$("input:hidden").attr("value");
+	
+
+	属性过滤选择器：
+
+选择div中有title属性的：$("div[title]")
+
+选择div中title属性值为test的：$("div[title='test']")
+
+选择div中title属性值不为test的：$("div[title!='test']")//注意：这里包含没有title属性的div
+
+
+选择div中title属性以te开头的：$("div[title^='te']")
+
+选择div中title属性以est结尾的：$("div[title$='est']")
+
+选择div中title属性中带有es的：$("div[title*='es']")
+
+选择div中含有id属性，并且title属性中含有es的：$(div[id][title*='es'])
+
+选择div中带有title属性，并且不为test的：$("div[title][title!='test']")
+
+
+	子元素过滤选择器
+
+选取class为one的div的第二个子元素：$("div.one :nth-child(2)")
+
+选取class为one的div的第一个子元素：$("div.one :first-child")
+
+选取class为one的div的最后个子元素：$("div.one :last-child")
+
+选取class为one的div中只有一个子元素的那个div的子元素：
+	$("div.one :only-child")
+
+
+	表单元素过滤选择器
+
+对表单内所有可用的text 进行赋值：$(":text:enabled").val("aaa");
+
+对表单内所有不可用的text进行赋值：$(":text:disabled").val("bbb");
+
+获取name为hoby的多选框中（checkbox）所有选中的元素：
+	$(":checkbox[name='hoby']:checked")
+
+
+得到select框被选中的值：$("select :selected")
+	这里得到的是被选中的所有元素，返回的是jQuery对象，是集合
+	
+	****注意：这里在select ：selected冒号之前有一个空格
+
+遍历这个集合用each方法：
+	$("select :selected").each(function(){
+		//这里循环后的对象是DOM对象，不再是jQuery对象
+		alert(this.value);
+	})
+
+
+
+
+
+
+
+	选择器练习：
+
+在<p>标签一</p>里拿到p标签修改文本
+$(function(){
+	$("p").click(function(){
+		
+		//显示点击的这个p标签的文本
+		alert($(this).text());
+		//修改点击的这个p标签的文本改为括号里的
+		$(this).text("--" + $(this).text());	
+	})
+});
+注意：text（）方法不带参数表示显示这个文本，带参数表示修改这个标签
+
+
+
+
+
+=====================================================================================
+
+			响应器
+
+
+
+
+
+
+=====================================================================================
+
+			常用方法
+
+each（）:遍历
+
+
+
+
+

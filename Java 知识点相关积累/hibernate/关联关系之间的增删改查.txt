@@ -1,0 +1,58 @@
+设置是否关联：	
+	cascade设置的是save、update、delete
+	fetch设置是get、load和其他读取	
+
+
+
+1、save单项存储：User类里面有Group，在save的时候，需要先session.save（group）；
+	然后session.save（user）；
+		
+	或者在User类的getGroup（）方法上面的@ManyToOne添加：
+		@ManyToOne(cascade={CascadeType.ALL})
+
+		CascadeType有5种，常用的有ALL、REMOVE、PERSIST
+		设置后分别在所有、删除时、添加时自动关联对象，不需要在保存group
+
+
+2、save双向存储：需要user.setGroup(group)、group.getUsers.add(user)------双向关联
+		然后设置好两边的  ： cascade={CascadeType.ALL}
+
+		或者session.save(group);session.save(user)
+
+	双向铁律：（1）一定要设置好mappedBy
+		  （2）在程序中要双向关联
+
+
+3、get双向读取：当读取User（many的一方）的时候，会把User的Group（one的一方）默认读取出来
+		而读取Group（one的一方）的时候，不会把Group的Set<User> users读取出来
+
+		如果需要改变默认情况，可以修改：@OneToMany（fetch=FetchType.EAGER）
+			FetchType.EAGER：会把关联的一方读取出来
+			FetchType.LAZY：不会把关联的读取出来
+
+				@OneToMany默认LAZY
+				@ManyToOne默认EAGER
+
+	注意：假如是LAZY状态，在session还没commit的时候，去拿他的成员变量，hibernate也会自		动帮忙连接数据库拿去
+
+
+
+		
+4、update双向：假如设置了cascade={CascadeType.ALL}，那么更新User的时候，就会更新Group
+
+
+
+5、delete语句：假如cascade=all的时候，不方便修改cascade，不想删除连带关系的话，2种做法：
+	（1）删除之前先取消连带关系：user.setGroup(null);
+		然后session.clear()	//清除缓存
+		然后session.delete(user);
+
+	（2）可以使用EJBSQL、HQL语句：
+		session.createQuery("delete from user u where u.id = 1").executeUpdate();
+	
+
+
+6、
+
+
+

@@ -1,0 +1,20 @@
+effective java
+java特种兵
+java web技术内幕
+jvm虚拟机相关内容
+
+
+javaeye
+
+jquery
+
+maven
+
+ibatis
+
+ajax
+
+ant
+
+linux
+

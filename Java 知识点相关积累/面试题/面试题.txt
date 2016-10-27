@@ -1,0 +1,77 @@
+
+1、java有内存泄露吗？
+	从语法意义上没有，但是在实际开发中有可能有，比如打开一个连接池或者一个文件不关闭，	
+	在本地就无法关闭，因为java调了c，c掉了windows的API就会造成内存泄露
+
+
+
+2、1+N的问题，在hibernate中@ManyToOne状态中，读取Mnay的一方，会每次都把One的一方都读取出来
+	1、可以把fetch设置成LAZY
+	2、在One的一方的类上面添加：@BatchSize（size=5）
+	3、或者用HQ，用两表连接 join fetch：
+		from Topic left join fetch t.Category c
+
+
+3、什么是缓存：在内存中开辟一个区域存放本来放在硬盘在的数据
+
+
+4、什么是一级缓存：session级别的缓存，session1不能取session2的缓存
+
+
+5、什么是二级缓存：所有session共用一个缓存区，这个缓存区称为二级缓存
+	load（）和iterator默认使用二级缓存	list（）往二级缓存里添加数据
+
+	用法：添加jar包，引入cache.xml，添加@cache	
+		在hibernate.cfg.xml里配置
+
+
+6、什么时候用到二级缓存：经常被访问，改动不大不会经常改动，数量有限的时候
+	例如：权限、组织架构
+
+
+7、查询缓存：在两个查询语句一样的时候，查询缓存才能起作用
+	在hibernate.cfg.xml里配置：<property name="cache.use_query_cache">true</property>
+		并且必须打开二级缓存，才能使用查询缓存
+	例子：session.createQuery("from Category").setCacheable(true).list();
+		
+
+8、缓存算法：假如缓存100个算满，进来第1010个的时候，哪一个缓存数据被挤掉，三种：
+	1、按照时间
+	2、按照最近被使用的次数
+	3、按照first in first out ，缓存是一个数组，把先进来的挤掉
+
+
+	
+9、数据库有四种事务设置，为了提高效率数据库设置成read-commit，在hibernate中怎么解决
+	两种：乐观锁和悲观锁
+	悲观锁是利用数据库的锁 添加for update
+	乐观锁是给程序加锁，加一个字段，取出来时为0，修改后变成1
+
+
+
+10、AOP：在一个程序运行期间，在方法之前加一个logbegin，之后加一个logafter，这就是AOP
+	具体实现：假如这个类实现了接口，就可以用JVM自带的动态代理，至于动态代理的原理
+	代码，之前写过，现在忘了。如果没有实现接口的话，也可以用cglib直接操作二进制码
+	来完成，这个还没试过，不过看一下文档应该问题不大。或者可以用spring的AOP
+
+AOP的作用：日志、权限、性能、审查，主要用在声明式的事务处理
+	
+
+11、web service相当于HTTP + ？ + ？
+	？：xml
+	？：schema
+
+12、wsdl是什么？
+	webservice定义语言，一个webservice会对应一个wsdl文档，
+
+13、如何发布一个webservice
+	定义SEI @webservice	@webMethod
+	定义SEI的实现
+	发布：Endpoint.publish(url,SEIImplementObject);
+
+
+14、如何请求一个webservice？
+	（1）、根据wsdl文档生成客户端代码，可以用jdk用可以用cxf的
+	（2）、创建wsdl文档里的web：service标签里name属性的类
+	（3）、然后调用get方法，拿到具体实现的类，
+	（4）、然后调用要具体的方法，比如得到天气预报，就调用getWeather（）	

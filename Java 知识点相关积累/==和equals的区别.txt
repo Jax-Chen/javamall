@@ -1,0 +1,16 @@
+1.int[] x = new int[]{3,1,2,4};
+  int[] y = new int[]{3,1,2,4};
+  
+  ①System.out.println(x == y);                打印为false;
+  ②System.out.println(x.equals(y));           打印为false;这个为什么返回的是false??
+  ③System.out.println(Arrays.equals(x, y));   打印为true;
+
+  String aa = "123";
+  String bb = "123";
+  ④System.out.println(aa == bb);              打印为true
+  ⑤System.out.println(aa.equals(bb));         打印为true
+
+  String cc= new String("123");
+  String dd= new String("123");
+  ⑥System.out.println(cc == dd);              打印为false
+  ⑦System.out.println(cc.equals(dd));         打印就为true

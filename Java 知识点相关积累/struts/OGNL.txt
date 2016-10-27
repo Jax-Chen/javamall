@@ -1,0 +1,59 @@
+		OGNL：Object Graph Navigation Language（对象图导航语言）
+		例子都在：Struts2_2000_OGNL
+	
+	1、传参数，关于显示user.age问题
+
+只有在url地址里传了参数user.age，在action调用的java类里才会去构造User类，
+想要初始化user对象，也可以自己在成员变量里new，例：private User user = new User（）;
+而且domain model（User类）必须要有参数为空的构造方法
+
+
+
+	2、访问普通属性和方法、访问静态属性和方法
+
+访问普通方法：直接用.的方式，例如：cat.miaomiao();
+
+访问静态方法，需要先在struts.xml里设置：<constant name="struts.ognl.allowStaticMethodAccess" value="true"/>
+
+静态方法访问格式为-----@类的完整路径+名@静态方法名（静态属性名）例如：
+<s:property value="@com.bjsxt.struts2.ognl.S@s()"/> （访问静态方法）
+<s:property value="@com.bjsxt.struts2.ognl.S@STR/">（访问静态属性）
+
+
+
+	3、访问集合
+
+访问List：<s:property value="users"/>
+访问List中某个元素： <s:property value="users[1]"/>
+访问List中元素某个属性的集合：<s:property value="users.{age}"/>
+访问List中元素某个属性的集合中特定值：<s:property value="user[1].age"/>
+访问Set：<s:property value="dogs"/>
+访问Set中某个元素：<s:property value="dogs[1]"/>
+访问Map：<s:property value="dogMap"/>
+访问Map中某个元素：<s:property value="dogMap.dog101"> //Map对象的名字加上.要取得value的那个key
+访问Map中所有的key：<s:property value="dogMap.keys"/>
+访问Map中所有的value：<s:property value="dogMap.values"/>
+访问容易的大小：<s:property value="dogMap.size()"/>
+
+
+
+	4、对集合的过滤:用？#过滤现则所有，^#代表第一个位置,$#代表末尾位置
+	   struts会帮我们自动遍历集合，this.代表遍历时的当前对象
+
+取到users集合中age属性=1的第0个位置的集合的age属性：
+<s:property value="users.{?#this.age==1}.{age}[0]"/>
+
+取到users集合中age属性>1的元素的age集合的头一个：
+<s:property value="users.{^#this.age>1}.{age}"/>
+
+取到users集合中age属性>1的元素的age集合的末尾一个：
+<s:property value="users.{$#this.age>1}.{age}"/>
+
+判断users集合中age>1是否等于空：
+<s:property value="users.{?#this.age>1} == null"/>
+
+
+
+	5、用[]访问值栈中的action
+<li>[]:<s:property value="[0].username"/></li>
+

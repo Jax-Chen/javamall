@@ -1,0 +1,24 @@
+				spring 环境搭建：DI ----  IOC（依赖注入）
+
+1、引入spring要用的jar包，引入commons-logging.jar包
+
+
+2、创建配置类的beans.xml文件， 加入xml的头信息
+
+配置信息：  
+  <bean id="u" class="com.bjsxt.dao.impl.UserDAOImpl">
+  </bean>
+	
+  <bean id="userService" class="com.bjsxt.service.UserService">
+  	<property name="userDAO" ref="u" /> 
+  		
+  </bean>
+
+
+3、在程序里写：
+		ApplicationContext ac = new ClassPathXmlApplicationContext("beans.xml");
+		
+		UserService service = (UserService)ac.getBean("userService");
+
+
+4、

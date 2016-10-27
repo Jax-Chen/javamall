@@ -1,0 +1,51 @@
+
+
+				select 单选框
+
+$("#selectId").val()拿到select选中的值
+
+$("#selectId").val("option的value的值")：在参数里面输入要选中的option的value就能选中拿个option
+
+
+
+
+=========================================================================================
+
+				select 多选框
+
+$("#selectId").val()拿到select选中的值
+
+$("#selectId").val(["option1的value","option2的value"])：在参数里面输入要选中的option的value就能选中拿个option，因为多选框选中的是数组，所以要添加[ ]
+
+
+
+
+=========================================================================================
+
+				checkbox
+
+$(":checkbox[name='c']").val(["checkbox1的value","checkbox2的value"])
+用val方法，然后在参数里填上数组，在数组里填上要选中的checkbox的value值就能选中
+
+怎么拿到checkbox已经选中的：
+#(":checkbox[name='c']:checked").val()
+*****注意：因为checkbox选中的是多个，并且是数组，这里用val方法，只能拿到已经选中的第一个
+	需要用each方法遍历，才能拿到所有的，但是radio就可以，因为radio就一个值
+	#(":checkbox[name='c']:checked").each(function(){
+		//这样就拿到了
+		this.value	
+	})
+
+
+=========================================================================================
+
+				radio
+
+$(":radio[name='r']").val(["radio的value"]);
+用val方法，然后在参数里填上数组，在数组里填上要选中的radio的value值就能选中
+	注意：radio虽然是一个值，也要添加[]	
+
+怎么拿到radio已经选中的：
+$(":radio[name='c']:checked").val
+这样就可以拿到了
+

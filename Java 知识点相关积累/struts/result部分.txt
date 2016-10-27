@@ -1,0 +1,108 @@
+12、Result类型（总共有11种，了解4种，重点掌握前两种）：dispatcher（默认是这种）、redirect、chain、redirectAction
+
+（1）dispatcher：服务器端跳转到JSP页面---url地址显示为最初的地址
+（2）redirect：客户端跳转到JSP页面---url地址显示为最后访问到的的那个页面的地址
+（3）chain：服务器端跳转到某个action---url地址显示为最初的地址
+（4）redirectAction：客户端跳转到某个action---url地址显示为最后访问到的的那个页面的地址
+
+举例：
+(1)
+<action name="r1">
+	<result type="dispatcher">/r1.jsp</result>
+</action>
+
+(2)
+<action name="r2">
+	<result type="redirect">/r2.jsp</result>
+</action>
+
+(3)
+<action name="r3">
+	<result type="chain">r1</result>
+</action>
+
+(4)
+<action name="r4">
+	<result type="redirectAction">r2</result>
+</action>
+
+
+
+	13、共用结果集
+<global-result>
+	<result name="mainpage">/main.jsp</result>
+</global-result>
+在一个package里可以共用这个结果集，如果其他包里想用这个结果集，就继承这个包
+在真正应用中，基本都是创建一个公共包，然后所有的模块包继承这个公共包
+
+
+
+	14、动态结果集
+在action调用的java类里创建一个成员变量 private String r;
+然后根据传过来的参数的不同情况，往r里面存储不同的值，比如：
+r="user_add.jsp"或者r="user_delete.jsp"，然后在struts.xml文件里面就可以这样配置：
+<action name="user" class="com.UserAction">
+	<result>${r}</result>
+</action>
+
+注：跟EL表达式不同，这是专门用在struts.xml配置文件里面的
+
+
+
+	15、带参数的结果集（从action传参到JSP页面）：
+
+从jsp页面访问action，传过去参数t=1传给UserAction，action调用的java类接受到参数后，
+调用相关的result，并且动态结果集，传给result里填写的JSP页面，如下：
+
+	struts.xml里面的配置如下：
+	<action name="user" class="com.UserAction">
+		<result>user_success.jsp?t=${type}</result>
+	</action>
+
+然后在JSP页面可以拿到传过来的t，写法如下：
+<s:property  value="#parameter.t"/>
+
+知识点：一个request共享一个value stack，取property里的parameter时要加#
+
+
+
+	16、默认结果集----默认页面
+
+<package>
+	<default-action-ref name=""Category_list>
+	<action name="Category_list" class="com.bjsxt.bbs2009.action.CategoryAction">
+		<result>/index.jsp</result>	
+	</action>
+</package>
+
+
+
+	17、页面声明式异常处理
+
+第一种（在自己额包里继承异常）：
+<exception-mapping result="error" exception="java.sql.SQLException"/>
+	
+<result name="error">/error.jsp</result>
+
+
+
+第二种：继承父亲的异常包：-----用的最多
+
+（1）父亲package：
+<package name="bbs2009_default" extends="struts-default">
+	
+	<global-results>
+		<result name="error">/error.jsp</result>
+	</global-results>
+
+	<global-exception-mapping>
+		<exception-mapping result="error" exception="java.sql.SQLException"/>
+	<global-exception-mmapping>
+
+</package>
+
+
+
+	
+
+

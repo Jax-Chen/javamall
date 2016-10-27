@@ -1,0 +1,181 @@
+struts2的核心内容：把请求和展现分开 	
+
+	struts2 入门帮助
+
+1、导入struts2要用到的jar文件
+2、配置web.xml文件里的Filter
+3、创建struts2.xml文件，配置相关文件
+4、在JSP页面中使用struts标签：<%@taglib uri="/struts-tags" prefix="s"%>
+5、创建action
+
+
+
+	1、如何查看struts2的源码
+
+struts2-core右键 --- Properties --- Java Source Attachment --- External Folder --- 找到struts的位置---目录位置
+（目录位置：struts-2.3.30/src/core/src/main/java）
+
+
+
+	2、如何在Eclipse中查看doc文档
+
+struts2-core右键 --- Properties --- Javadoc Location --- 选择doc目录位置
+（目录位置 ： struts-2.3.30/docs/struts2-core-apidocs/）
+
+		
+
+	3、struts2执行过程图：../struts2执行过程图.png
+
+
+	
+	4、在action里写上class，执行过程图：../struts2执行过程图（class）.png
+
+action的作用：在试图页面访问带有execute方法的java类里，在里面做一些判断之后，根据需要，返回类型，再转到不同的页面，比如访问登陆页面，判断是否登陆，如果登陆了返回值，转到登陆成功页面；如果登陆失败，则转到登陆页面
+
+
+
+		约定优于配置
+	5、使用通配符，使配置数量降低：method={1}
+
+<action name="*_*" class="com.bjsxt.struts2.action.{1}Action" method="{2}">
+	<result>/{1}_{2}_success.jsp</result>
+</action>
+
+
+在地址栏输入user_add.action，struts2自动匹配第一个*{1}=user，第二个*{2}=add 
+所以，可以根据通配符，找到不同的类和不同的方法去处理，然后跳转到哪个页面
+
+
+
+	6、接收参数
+
+（1）使用param接受参数，在地址栏后面跟上参数：？name=a&
+然后在action调用的java类里创建和param参数名字一样的成员变量name，设置get、set方法
+就可以直接使用
+注：这里要保证get和set方法的方法名和参数明一样，并不是成员变量的名字一样
+
+
+（2）使用DomainModel接受参数，在地址栏后面跟上 ：？user.name=a&user.age=8
+再action调用的java类理有成员变量User user；
+User类里有成员变量String name和int age，自动转换类型
+
+（3）使用ModelDriven方式（不常用）
+	Action类实现ModelDriven<Model>接口
+	实现ModelDriven接口的getMode方法
+	然后在Action里创建Model对象
+		例如：private User user = new User();
+			添加get、set方法
+	
+	这样接受过来的参数直接就保存在了Model对象里面
+	要用的话直接Model.getName()、Model.getPassword();
+
+
+
+	7、struts传参的中文问题
+
+再struts.xml里添加配置：<constant name="struts.i18n.encodeing" value="GBK"/>
+
+
+
+	8、简单数据验证
+
+使用addFieldError方法和<s:fieldError>标签处理数据校验:
+	(1)action调用的java类里方法的写法：this.addFieldError（"name","name is error"）;
+	(2)在JSP显示页面 <s:property value="errors.name[0]"/>
+		<s:debug></s:debug>:查看信息	
+
+解释：在addFieldError里放的是一对map，“name”是key，“name is error”是value
+      然后struts会把这对map存放到stack（栈）里，然后采用error.name拿出value，
+      并且value是字符串数组，所以后面加[0]
+
+
+
+	9、如何访问web元素：request、session、Application
+
+第一种：
+
+在action调用的java类里，
+创建private Map request;
+private Map session;
+private Map application;
+然后在构造方法里或者在execute方法里拿到request、session、和application，如下：
+
+request = （Map）ActionContext.getContext.get("request");
+session = ActionContext.getContext.getSession;
+application = ActionContext.getContext.getApplication;
+
+因为这里的reqeust、session、application都是Map类型的，所以可以往里面放key和value，如下：
+public String execute(){
+	request.put("r1","r1");
+	session.put("s1","s1");
+	application.put("a1","a1");
+	return "success";
+}
+
+在action调用的java类里往这3个Map里放置key和value后，在JSP页面可以通过三个元素的attribute拿到放置在Map里的值，可以分别通过原始方法（<%= %>）和struts标签方法拿到，如下：
+<%= request.getAttribute("r1"); %> | <s:property value="#request.r1"/>
+<%= session.getAttribute("s1"); %> | <s:property value="#session.s1"/>
+<%= application.getAttribute("a1"); %> | <s:property value="#application.a1"/>
+
+知识点：所以通过这个例子，可以知道struts肯定是帮我们把action里的三个元素的Map和HttpRequest、HttpSession、ServletContext建立的联系，并且赋了值
+
+注：这里的ActionContext是指当前action运行的环境
+
+
+
+第二种（最常用的--IOC）：
+
+在action调用的java类（LoginAction2.java）里，java类如下：
+
+public class LoginAction2 extends ActionSupport implements RequestAware,SessionAware,ApplicationAware{
+	
+	private Map request;
+	private Map session;
+	private Map application;
+
+	public String execute(){
+		request.put("r1","r1");
+		session.put("s1","s1");
+		application.put("a1","a1");
+	}
+
+
+	//再实现分别的setRequest、setSession、setApplication方法
+			.
+			.
+			.
+}
+
+创建private Map request;
+private Map session;
+private Map application;
+然后实现RequestAware,SessionAware,ApplicationAware接口，struts2就会通过filter把HttpRequest里面的值传给这个方法，然后调用这个方法，再在execute方法里put相应的值可以在JSP页面拿到了，
+如下：
+<%= request.getAttribute("r1"); %> | <s:property value="#request.r1"/>
+<%= session.getAttribute("s1"); %> | <s:property value="#session.s1"/>
+<%= application.getAttribute("a1"); %> | <s:property value="#application.a1"/>
+
+知识点：所以通过这个例子，可以知道struts2通过filter调用了这个实现了这几个接口的方法，然后把HttpRequest、HttpSession、ServletContext里的值传给了这个java类，所以就可以直接用了
+
+
+
+	10、包含：在struts.xml里包含其他.xml文件
+
+<struts>
+	<include file="login.xml">
+</struts>
+
+用法：一个小组分做一个项目，分模块时，每个人可以把配置写在不同的xml文件里，然后包含进来
+
+注意：struts.xml引进来的文件，也要有xml格式的头信息和<struts></struts>标签
+
+
+	11、action的默认设置：当action找不到时，默认跳转到那个action
+<default-action-ref name="index"></defaul-action-ref>
+
+
+
+
+
+
+	

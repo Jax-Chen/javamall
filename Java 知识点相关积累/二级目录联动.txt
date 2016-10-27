@@ -1,0 +1,45 @@
+
+				<%-- if(document.form.category1.selectedIndex == 0){
+					
+					document.form.category2.length = 1;
+					document.form.category2.options[0].text = "查询二级目录" ;
+					document.form.category2.options[0].value = "0" ;
+					return;
+				}
+				<%
+				for(int i=1;i <= topCategories.size();i++){
+					int count = 0;
+					Category c = topCategories.get(i-1);
+					for(int k=0;k<categories.size();k++){
+						Category ck = categories.get(k);
+						if(ck.getPid() == c.getId()){
+							count ++;
+						}
+					}
+				%>
+				if(document.form.category1.selectedIndex == <%= i %>){
+					
+
+					
+					document.form.category2.selectedIndex = 0;
+					
+					document.form.category2.length = <%= count%>;
+				<%
+					int index = 0;
+					for(int j=0;j<categories.size();j++){
+						Category childCategory = categories.get(j);
+						if(childCategory.getPid() == c.getId()){
+							//System.out.println(childCategory.getName());
+							%>
+							
+							document.form.category2.options[<%= index %>].text = "<%= childCategory.getName() %>" ;
+							document.form.category2.options[<%= index++ %>].value = "<%= childCategory.getId() %>" ;
+
+							<%
+						}
+					}
+				%>
+				}
+				<%
+				}
+				%> --%>

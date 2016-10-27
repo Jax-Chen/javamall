@@ -1,0 +1,20 @@
+
+
+public void moveUp(Long id) {
+
+//取出需要修改的那个板块数据
+		Forum forum = this.getSession().get(Forum.class, id);
+		//取出需要和上面板块交换位置的另外一个板块数据
+		Forum other = (Forum)this.getSession().createQuery("from Forum f where f.position<? order by f.position desc")
+				.setParameter(0, forum.getPosition()).setFirstResult(0).setMaxResults(1).uniqueResult();
+		
+		//判断如果需要移动位置的板块是位于第一个，就直接return
+		if(other == null){
+			return;
+		}
+		
+		int temp = forum.getPosition();
+		
+		forum.setPosition(other.getPosition());
+		other.setPosition(temp);
+}

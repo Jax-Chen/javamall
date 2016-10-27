@@ -1,0 +1,12 @@
+抽层用到泛型和反射机制时
+
+
+
+public class BaseAction<T> extends ActionSupport implements ModelDriven<T>{
+	T model；
+
+	ParameterizedType pt =  (ParameterizedType)this.getClass().getGenericSuperclass();
+			clazz = (Class)pt.getActualTypeArguments()[0];
+			model = （T）clazz.newInstance();
+
+参考OA_SSH项目中的BaseAction的代码

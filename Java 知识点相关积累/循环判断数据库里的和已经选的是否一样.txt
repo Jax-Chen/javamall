@@ -1,0 +1,39 @@
+	<%-- 循环所有的权限选项 --%>
+							<s:iterator value="privileges1" var="x">//取出数据库里所有的权限
+							
+									<input name="resourceIdList" type="CHECKBOX" value="${id}" id="${id}"  //设置成checkBox输出
+
+										<%-- 判断role已经设置的权限和所有权限的id是否一样 --%>
+										<s:iterator value="model.privileges" var="etc">//取出所有的model已经设置的权限
+											<s:if test="#etc.id==#x.id">checked</s:if>  然后判断是否一样
+										</s:iterator>
+										
+									 /><label for="${id}"><s:property value="#x.name"/></label>
+								<br/>
+							</s:iterator>
+
+
+
+
+
+
+
+<%-- 使用Struts2的自定义标签
+<s:checkboxlist name="privilegeIds" list="#privilegeList" listKey="id" listValue="name"></s:checkboxlist>				
+--%>
+
+
+
+
+
+
+或者用EL表达式：
+
+<%-- 直接写HTML，并自行实现回显效果 --%>
+	<s:iterator value="privileges1" var="x">
+									<input type="checkbox" name="privilegeIds" value="${id}"
+										id="cb_${id}"
+										<s:property value="%{#x.id in model.privileges.{id} ? 'checked' : ''}"/>>
+									<label for="cb_${id}">${name}</label>
+									<br />
+								</s:iterator>

@@ -1,0 +1,6 @@
+	<br>
+	hello(jsp脚本):<%= request.getAttribute("hello") %><br>
+	hello(el表达式，语法：$和{})：${hello}<br>
+	hello(el表达式，el的内置对象，pageScope，requestScope，sessionScope，applicationScope)<br>
+	如果不指定范围，就是从pageScope开始：${requestScope.hello}<br>
+	指定范围，从session中取得：${sessionScope.hello}<br>

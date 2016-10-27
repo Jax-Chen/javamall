@@ -1,0 +1,8 @@
+
+假如真正操作的页面是在子窗口里（frame嵌套），不想让登陆页面出现在子窗口
+
+可以判断当前页面是否有上级窗口，如果有就刷新上级窗口
+
+if(window.parent != window){
+	window.parent.location.reload(true);
+}

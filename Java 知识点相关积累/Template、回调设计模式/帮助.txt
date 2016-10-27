@@ -1,0 +1,47 @@
+
+
+public class MyHibernateTemplate {
+
+	//接收到带有真正不重叠方法代码的类的对象，
+	public void executeWithNativeSession(MyHibernateCallback callback) {
+		Session s = null;
+		try {
+			//这里为模板
+			s = getSession();
+			s.beginTransaction();
+			
+			//调用真正带有不重复方法的那个类的方法
+			callback.doInHibernate(s);
+			
+			//这里为模板
+			s.getTransaction().commit();
+		} catch (Exception e) {
+			s.getTransaction().rollback();
+		} finally {
+			//...
+		}
+	}
+
+	private Session getSession() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	//调用这个模板类的方法（1）
+	public void save(final Object o) {
+		
+		//调用模板类中带有模板代码的方法，把带有不重复的方法代码的对象传过去（2）
+		new MyHibernateTemplate().executeWithNativeSession(new MyHibernateCallback() {
+			public void doInHibernate(Session s) {
+				s.save(o);
+				
+			}
+		});
+	}
+	
+	
+
+}
+
+//模板设计模式，比如一个方法的开头和结尾都是一样的，只有中间一部分不一样，就可以建一个类来专门做开头和结尾的部分
+	new 出这个模板类，调用这个模板类的方法，把

@@ -1,0 +1,30 @@
+<!-- 配置Hibernate事务管理器 -->
+    <bean id="transactionManager"
+        class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <!-- 配置事务异常封装 -->
+    <!-- <bean id="persistenceExceptionTranslationPostProcessor"
+        class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" /> -->
+
+    <!-- 基于数据源的事务管理器 -->
+    <!-- <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" 
+        p:dataSource-ref="dataSource" /> -->
+
+    <!-- 配合<tx:advice>和<aop:advisor>完成了事务切面的定义 -->
+    <!-- 使用强大的切点表达式是语言轻松定义目标方法 -->
+    <aop:config proxy-target-class="true">
+        <!-- 通过aop定义事务增强切面 -->
+        <aop:pointcut expression=" execution(* com.bjsxt.service..*(..))"
+            id="serviceMethod" />
+        <!-- 引用事务增强 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethod" />
+    </aop:config>
+    <!-- 事务增强 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <!-- 事务属性定义 -->
+        <tx:attributes>
+            <tx:method name="*" />
+        </tx:attributes>
+    </tx:advice>

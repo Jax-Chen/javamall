@@ -1,0 +1,53 @@
+
+1、在配置文件里写上：
+	<!-- aspectj是一个专门用于代理的框架 ，spring用了他，这里配置了表示了就可以用aspectj注解的方式实现动态代理-->
+	<aop:aspectj-autoproxy ></aop:aspectj-autoproxy>
+
+	然后在需要添加的切面的类上写：@Aspect
+		在这个类需要添加到切面上的方法上添加：
+		@Before("execution(public void com.bjsxt.dao.impl.UserDAOImpl.save(com.bjsxt.model.User))")
+	
+			@Before里面写的是在哪个方法之前添加
+
+	注意:两个类都需要是spring帮忙管理的，才能添加切面
+	还要引入jar包：aspectjrt.jar 	aspectweaver.jar	aopaliance.jar 
+	
+
+2、3.常见的Annotation:
+a)@Pointcut
+b)@Before
+c)@AfterReturning
+d)@AfterThrowing
+e)@After
+f)@Around
+4.织入点语法
+a)void !void
+b)参考文档（* ..）
+
+
+
+
+
+
+					xml方式
+<bean id="logInterceptor" class="com.bjsxt.aop.LogInterceptor" />
+
+<aop:config>
+	<aop:aspect id="logInterceptor" ref="logInterceptor">
+		<!-- 定义一个切面，参考的是logInterceptor这个类 -->
+
+		<aop:before method="before"  
+		pointcut="execution(public void com.bjsxt.dao.impl.UserDAOImpl.save		(com.bjsxt.model.User))"/>
+		<!-- 调用的是LogInterceptor里的“before”方法 
+			pointcut参数是在调用什么方法之前调用切面方法-->
+
+	</aop:aspect>
+</aop:config>
+
+
+
+
+
+
+
+			

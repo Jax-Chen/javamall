@@ -1,0 +1,127 @@
+		定义变量
+<#assign mail="com.cjc.freemaker">
+mail为变量名称， 引号中的为变量的值
+
+<#assign number=123> 	定义数值类型
+
+<#assign boo=true>	定义boolean类型
+
+定义Map和json类似
+
+日期显示的格式化：在java类里：map.put("date1",new Date());
+	在ftl文件里：${date1?string("yyyy-MM-dd HH:mm:ss")}
+
+===============================================================
+输出Map元素：
+
+
+===============================================================
+		if判断
+
+你好，${user},今天天气不错！
+<#if user!="Jax-Chen">
+	相等
+</#if>
+
+-------------------------------------------------------------
+		if else判断
+<#if random gte 60>
+	及格
+<#else>
+	不及格
+</#if>
+
+在Freemaker类里面往map.put("random",new Random().nextInt(100));
+
+-------------------------------------------------------------
+		if elseif else if
+<#if random gte 60>
+	优秀
+<#elseif random gte 80>
+	良好
+<#else>
+	一般
+<#if>
+
+===============================================================
+		list语句
+<#list lst as dizhi>	//lst是在java类里放置到map里的List对象，
+	${dizhi.city}	//dizhi是存放在list里的变量对象，然后循环临时变量的
+</#list>		//city属性
+
+		java类里的代码
+List lst = new ArrayList();
+		lst.add(new Address("中国","北京"));
+		lst.add(new Address("美国","芝加哥"));
+		lst.add(new Address("英国","伦敦"));
+		
+		root.put("lst", lst);
+
+===============================================================
+		include	     包含其他文件的内容，不一定是tld文件，txt也可以
+<#include "included.txt"/>
+===============================================================
+	定义宏macro（）指令：相当于在tld文件里定义一个方法，不需要重复写代码
+先定义宏：<#macro m1> //定义指令，名字为m1
+		aaabbbccc
+		dddeeefff
+	  </#macro>
+调用宏:<@m1/>
+
+
+
+
+
+	定义带参数的宏：
+<#macro m2 a b c >	<#-- m2为宏的名称，a、b、c为参数-->
+	${a}-${b}-${c}
+</#macro>
+	调用带参数：
+<@m2 "chen" "jiacun" "cun"/>
+
+
+	利用nested调用宏
+<#macro method>
+	<#nested>	<#-- nested为调用method这个宏传进来的参数的显示 -->
+</#macro>
+
+<@method>
+	gnewpogewgweagwegew 	<#-- 这行为调用method这个宏传过去的参数 -->
+</@method>
+	
+===============================================================
+
+		命名空间
+<#macro Copirite data>
+	Copirite (C) ${data} 陈家存.
+</#macro>
+<#assignb mail="com.cjc.freemaker-----------">//定义一个参数
+以上为b.ftl文件
+
+<#import "b.ftl" as bb/>	//引入b.ftl文件，增加一个命名空间为bb
+<@bb.Copirite "2010-2011"/>
+${bb.mail}
+<#assign mail="com.cjc.freemaker">
+${mail}
+<#assign mail="com.cjc.freemaker" in bb>	//修改b.ftl里面的mail变量
+${bb.mail}
+以上为a.ftl文件
+
+===============================================================
+		运算符
+${sss？"abc"}:假如sss不存在，就输出abc
+
+<#if user??> hello,${user}</#if> user??返回boolean类型
+	假如user存在，返回true，否则返回false
+
+===============================================================
+
+
+
+
+
+
+
+
+
+

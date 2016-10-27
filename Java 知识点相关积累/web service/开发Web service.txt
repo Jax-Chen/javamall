@@ -1,0 +1,25 @@
+
+			一、创建web service接口和实现类
+
+
+			二、发布web service
+
+
+=========================================================================================
+
+创建客户端Web Service
+
+找到java的src目录，先生成wsdl文档生成的java类
+
+	在dos窗口，进入到java项目的src目录，输入wsimport -keep http://webservice.36wu.com/weatherService.asmx?wsdl
+
+
+这样就会创建WebService服务器端暴露的接口
+
+然后找到这个文件里的<wsdl:service这个地方，然后创建这个类
+WeatherService factory = new WeatherService();
+		WeatherServiceSoap weatherServiceSoap = factory.getWeatherServiceSoap();
+		TodayWeather str = weatherServiceSoap.getTodayWeatherByCityName("北京", null);
+		System.out.print(str.getWeather());
+
+执行，就可以查找

@@ -1,0 +1,43 @@
+
+		1、hm2ddl（hibernate建表语句）
+
+在hibernate.cfg.xml里配置： <property name="hbm2ddl.auto">update</property>
+
+中间可以选择四种：validate | update | create | create-drop
+
+create：表示每次启动hibernate的时候先drop，再create
+create-drop: 每次执行hibernate时候create表，然后结束时drop表
+update: 这个操作启动的时候会去检查schema是否一致，如果不一致会做scheme更新
+validate: 启动时验证现有schema与你配置的hibernate是否一致，如果不一致就抛出异常，并不做更新
+
+
+
+	2、是否显示建表语句，和对建表语句是否分行
+
+是否显示建表语句：<property name="show_sql">false</property>
+
+建表语句是否分行：<property name="format_sql">false</property>
+
+
+
+	3、数据库表名和model类名不一样时
+
+在model类名上加：@Table（name=“_teacher”）
+
+hibernate就会去寻找叫“_teacher”的表，如果没有就创建
+
+	
+
+
+	4、属性的相关设置（属性的相关映射）
+
+1、@Basic 没有增加@Basic的属性就等价于默认加了，所以会自动匹配数据库的字段名
+
+2、@Colum 假如字段名和model类的属性名不一样: @Colum（name=“_username”）
+
+3、@Transient 不想让model类里某个属性参与hibernate的自动化：@Transient
+
+4、默认的Date类型的参与匹配的时候存入数据库是日期和时间都储存
+假如要只显示日期或者时间：@Temporal
+
+5、枚举类型的映射：@Enumerated（EnumType.String）

@@ -1,0 +1,30 @@
+<script type="text/javascript">
+
+	var jsonObject = {
+			"id":1,
+			"name":"Jax-Chen",
+			"add":{"city":"wenzhou","school":"gaoji"},
+			"method":function(){
+				alert("调用方法！");
+			}
+	};
+
+	alert(jsonObject.name);
+	alert(jsonObject.add.school);
+	jsonObject.method();
+	
+</script>
+
+
+利用"":""格式创建json对象，Json对象是js的原生态格式
+
+
+
+
+把Json字符串转为Json对象，利用eval方法，并且需要在Json字符串里添加“（）”
+
+	var jsonStr = "{'name':'Jax-Chen'}";
+	
+	var testObject = eval("(" + jsonStr + ")");
+	
+	alert(testObject.name);

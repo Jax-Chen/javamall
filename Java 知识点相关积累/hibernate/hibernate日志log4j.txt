@@ -1,0 +1,4 @@
+
+1、添加slf4j-api.1.7.7.jar和log4j-1.2.17.jar
+
+2、从projects-etc里拷贝log4j.properties到项目的根目录下

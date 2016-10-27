@@ -1,0 +1,24 @@
+		怎么实现国际化的程序
+
+1、创建不同国家版本的资源文件：
+	（1）美国的：XXX_en_US_properties
+	（2）中国的：XXX_zh_CN_properties
+
+2、在资源文件里面分别写上key和value，如：
+	welcome.msg=欢迎
+
+3、然后在程序里面引用资源文件，如：
+
+public class Test{
+	public static void main(String[] args){
+		ResourceBendle res = ResourceBundle.getBundle("XXX",locale.CHINA);
+		System.out.println(res.getString("welcome.msg"));
+	}
+}
+
+4、或者在JSP也页面引用资源文件，如：
+<s:property value="getText('login.username')">
+
+注意中文乱码的问题：下载eclipse的propertyEditr插件
+
+5、动态语言切换

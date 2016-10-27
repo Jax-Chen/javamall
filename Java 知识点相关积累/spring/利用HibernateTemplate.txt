@@ -1,0 +1,22 @@
+
+
+第一种方法：用HibernateTemplate
+
+在xml文件里面配置：
+	<bean id="hibernateTemplate" 			class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	然后在DAOImpl层保存这个类的聚合关系（存有这个类的成员变量）
+
+
+
+
+第二种方法：用HibernateDaoSupport
+
+
+在xml文件里面配置：
+	<bean id="hibernateTemplate" 			class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+让DAOImpl层继承 HibernateDaoSupport类，这样就会把HibernateTemplate注入给HibernateDaoSupport，这样就可以直接调用this.getHbernateTemplate。save（log）；方法

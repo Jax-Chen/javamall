@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.bjsxt.hibernate.model">
+	<class name="Student">
+		<id name="id"/><!-- 这个为Student类里面的，对应在数据库里的主键 -->
+		<property name="name"/><!-- 假如Student类里面的成员变量和数据库字段名一样，就可以用property -->
+		<property name="age"/>
+	</class>
+</hibernate-mapping>        

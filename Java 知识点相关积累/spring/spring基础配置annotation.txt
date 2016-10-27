@@ -1,0 +1,28 @@
+	
+	1、bean的注入--annotation方式
+
+（1）、在spring的xml文件里配置：<context:annotation-config/>
+	然后在set方法上写上@Autowired（默认为byType类型）
+	自动帮忙注入
+
+（2）、在spring的xml文件里配置：<context:annotation-config/>
+
+	在xml文件里配置上	
+
+	然后在set方法上写上@Resource（默认为byName类型）
+	
+	（1）和（2）还需要在xml文件里写上<bean >
+	
+	第（3）种 实现了0xml文件，在xml文件里不需要写上配置信息	
+
+（3）在xml文件里写上<context:component-scan base-package="com.bjsxt"/>
+	在xml文件里就不需要写上<bean>，需要如下操作：
+		在需要spring帮忙初始化的类上写@Component（"userService"）
+		在UserDAO类上也写@Component（"u"）
+			然后在UserService类的setUserDAO（）方法上写@Resource（name="u"）
+
+	2、	初始化和结束时调用的方法
+	在相应的方法上添加：@PostConstruct（init）
+			    @PreDestroy（destroy）
+
+	
