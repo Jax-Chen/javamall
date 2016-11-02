@@ -1,0 +1,27 @@
+			开发
+后台：http://localhost:8080/admin/backendUi!main.do
+
+前台分销商：http://localhost:8080/distribution/new/distributor_login.html
+
+首页：http://localhost:8080
+
+手机分销商店中店：http://localhost:8080/distribution/new/gotoStore.html
+			会员
+
+http://localhost:8080/member/order.html
+
+
+
+
+
+
+			测试
+
+	分销商
+http://test.vvsvip.com/vpmall/distribution/new/distributor_login.html
+
+
+	普通会员
+http://test.vvsvip.com/vpmall/register.html
+
+http://120.25.199.197:8080/vpmall/login.html
