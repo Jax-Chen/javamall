@@ -1,0 +1,13 @@
+INSERT INTO `es_menu` VALUES ('109', null, '34', '满减促销', '', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('113', null, '109', '满减立减', 'http://localhost:8080/api/shop/enoughPriceReducePrice!getEnoughReduces.do', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('128', null, '0', '分销商管理', '', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('129', null, '128', '分销商', '/api/shop/distributionAction!test.do', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('130', null, '128', '分销商等级', '', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('135', null, '129', '分销商', '/api/shop/distributionAction!list_distributors.do', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('136', null, '130', '分销商等级', '/api/shop/distributorGradeAction!list_lv.do', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('137', null, '128', '分销商品', '', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('138', null, '137', '分销商品列表', '/api/shop/distributionGoodsAction!list.do', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('139', null, '137', '添加分销商品', '/shop/admin/goods!list.do', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('140', null, '137', '分销商品推荐', '/api/shop/distributionGoodsAction!listRecommend.do', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('141', null, '128', '提现管理', '', '', '0', '2', null, '0', '0', '1', 'default.png', null);
+INSERT INTO `es_menu` VALUES ('142', null, '141', '提现审核', '/api/shop/distributionCashout!list.do', '', '0', '2', null, '0', '0', '1', 'default.png', null);
